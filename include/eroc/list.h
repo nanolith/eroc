@@ -60,6 +60,14 @@ int eroc_list_create(eroc_list** list, int (*node_release)(eroc_list_node*));
  */
 int eroc_list_release(eroc_list* list);
 
+/**
+ * \brief Insert a node at the beginning of a list.
+ *
+ * \param list          The list to use for insertion.
+ * \param node          The node to insert.
+ */
+void eroc_list_insert(eroc_list* list, eroc_list_node* node);
+
 /* C++ compatibility. */
 # ifdef   __cplusplus
 }
