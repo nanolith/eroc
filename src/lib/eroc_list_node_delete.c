@@ -1,4 +1,3 @@
-
 /**
  * \file lib/eroc_list_node_delete.c
  *
@@ -20,43 +19,7 @@
  */
 int eroc_list_node_delete(eroc_list* list, eroc_list_node* node)
 {
-    if (node == list->head)
-    {
-        list->head = node->next;
-        if (NULL != list->head)
-        {
-            list->head->prev = NULL;
-        }
-        else
-        {
-            list->tail = NULL;
-        }
-    }
-    else if (node == list->tail)
-    {
-        list->tail = node->prev;
-        if (NULL != list->tail)
-        {
-            list->tail->next = NULL;
-        }
-        else
-        {
-            list->head = NULL;
-        }
-    }
-    else
-    {
-        if (NULL != node->prev)
-        {
-            node->prev->next = node->next;
-        }
-        if (NULL != node->next)
-        {
-            node->next->prev = node->prev;
-        }
-    }
-
-    list->count -= 1;
+    eroc_list_node_unlink(list, node);
 
     return list->eroc_list_node_release(node);
 }
