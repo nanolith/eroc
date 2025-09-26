@@ -17,18 +17,5 @@
  */
 void eroc_list_insert(eroc_list* list, eroc_list_node* node)
 {
-    node->next = list->head;
-    node->prev = NULL;
-
-    if (NULL != list->head)
-    {
-        list->head->prev = node;
-    }
-    else
-    {
-        list->tail = node;
-    }
-
-    list->head = node;
-    list->count += 1;
+    eroc_list_insert_before(list, NULL, node);
 }
