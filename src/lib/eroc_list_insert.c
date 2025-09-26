@@ -17,5 +17,5 @@
  */
 void eroc_list_insert(eroc_list* list, eroc_list_node* node)
 {
-    eroc_list_insert_before(list, NULL, node);
+    eroc_list_insert_before(list, list->head, node);
 }
