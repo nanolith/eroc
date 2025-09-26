@@ -87,6 +87,16 @@ void eroc_list_insert_before(
 void eroc_list_append(eroc_list* list, eroc_list_node* node);
 
 /**
+ * \brief Append a node after the given node.
+ *
+ * \param list          The list to use for appending.
+ * \param after         The node after which this node is appended.
+ * \param node          The node to append.
+ */
+void eroc_list_append_after(
+    eroc_list* list, eroc_list_node* after, eroc_list_node* node);
+
+/**
  * \brief Unlink a node from a list.
  *
  * \param list          The list to use for unlinking.
