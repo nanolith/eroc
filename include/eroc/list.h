@@ -69,6 +69,16 @@ int eroc_list_release(eroc_list* list);
 void eroc_list_insert(eroc_list* list, eroc_list_node* node);
 
 /**
+ * \brief Insert a node before the given node.
+ *
+ * \param list          The list to use for insertion.
+ * \param before        The node before which this node is inserted.
+ * \param node          The node to insert.
+ */
+void eroc_list_insert_before(
+    eroc_list* list, eroc_list_node* before, eroc_list_node* node);
+
+/**
  * \brief Append a node at the end of a list.
  *
  * \param list          The list to use for appending.
