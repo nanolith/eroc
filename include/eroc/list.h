@@ -84,7 +84,7 @@ void eroc_list_append(eroc_list* list, eroc_list_node* node);
  *
  * \returns 0 on success and non-zero on failure.
  */
-void eroc_list_node_delete(eroc_list* list, eroc_list_node* node);
+int eroc_list_node_delete(eroc_list* list, eroc_list_node* node);
 
 /* C++ compatibility. */
 # ifdef   __cplusplus
