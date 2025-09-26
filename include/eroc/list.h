@@ -77,6 +77,18 @@ void eroc_list_insert(eroc_list* list, eroc_list_node* node);
 void eroc_list_append(eroc_list* list, eroc_list_node* node);
 
 /**
+ * \brief Unlink a node from a list.
+ *
+ * \param list          The list to use for unlinking.
+ * \param node          The node to unlink.
+ *
+ * \note After this call, the caller owns the node.
+ *
+ * \returns 0 on success and non-zero on failure.
+ */
+void eroc_list_node_unlink(eroc_list* list, eroc_list_node* node);
+
+/**
  * \brief Delete a node from the list.
  *
  * \param list          The list to use for deleting.
