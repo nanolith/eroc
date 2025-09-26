@@ -11,6 +11,11 @@
 
 #include <stddef.h>
 
+/* C++ compatibility. */
+# ifdef   __cplusplus
+extern "C" {
+# endif /*__cplusplus*/
+
 /**
  * \brief Type erased linked list node.
  */
@@ -45,3 +50,8 @@ struct eroc_list
  * \returns 0 on success and non-zero on failure.
  */
 int eroc_list_create(eroc_list** list, int (*node_release)(eroc_list_node*));
+
+/* C++ compatibility. */
+# ifdef   __cplusplus
+}
+# endif /*__cplusplus*/
