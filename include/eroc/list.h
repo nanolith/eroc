@@ -19,3 +19,15 @@ struct eroc_list_node
     eroc_list_node* prev;
     eroc_list_node* next;
 };
+
+/**
+ * \brief Linked list.
+ */
+typedef struct eroc_list eroc_list;
+
+struct eroc_list
+{
+    int (*eroc_list_node_release)(eroc_list_node*);
+    eroc_list_node* head;
+    eroc_list_node* tail;
+};
