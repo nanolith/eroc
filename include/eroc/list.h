@@ -51,6 +51,15 @@ struct eroc_list
  */
 int eroc_list_create(eroc_list** list, int (*node_release)(eroc_list_node*));
 
+/**
+ * \brief Release an \ref eroc_list instance.
+ *
+ * \param list          The list to release.
+ *
+ * \returns 0 on success and non-zero on failure.
+ */
+int eroc_list_release(eroc_list* list);
+
 /* C++ compatibility. */
 # ifdef   __cplusplus
 }
