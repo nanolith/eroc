@@ -9,6 +9,8 @@
 
 #pragma once
 
+#include <stddef.h>
+
 /**
  * \brief Type erased linked list node.
  */
@@ -30,4 +32,5 @@ struct eroc_list
     int (*eroc_list_node_release)(eroc_list_node*);
     eroc_list_node* head;
     eroc_list_node* tail;
+    size_t count;
 };
