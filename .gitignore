@@ -1,1 +1,6 @@
+#ignore build artifacts
 build
+
+#ignore cscope artifacts
+cscope.*
+tags
