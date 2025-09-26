@@ -34,3 +34,14 @@ struct eroc_list
     eroc_list_node* tail;
     size_t count;
 };
+
+/**
+ * \brief Create an \ref eroc_list instance, using the given release method.
+ *
+ * \param list          Pointer to the list pointer to receive the created list
+ *                      on success.
+ * \param node_release  Method to release a node.
+ *
+ * \returns 0 on success and non-zero on failure.
+ */
+int eroc_list_create(eroc_list** list, int (*node_release)(eroc_list_node*));
