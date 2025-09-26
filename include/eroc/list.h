@@ -68,6 +68,14 @@ int eroc_list_release(eroc_list* list);
  */
 void eroc_list_insert(eroc_list* list, eroc_list_node* node);
 
+/**
+ * \brief Append a node at the end of a list.
+ *
+ * \param list          The list to use for appending.
+ * \param node          The node to append.
+ */
+void eroc_list_append(eroc_list* list, eroc_list_node* node);
+
 /* C++ compatibility. */
 # ifdef   __cplusplus
 }
