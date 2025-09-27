@@ -195,3 +195,64 @@ TEST(empty_list_append_after_NULL)
     /* we can release the list. */
     TEST_ASSERT(0 == eroc_list_release(list));
 }
+
+/**
+ * \brief Repeated list insert works as expected.
+ */
+TEST(repeated_list_insert)
+{
+    eroc_list* list;
+    eroc_list_node* a;
+    eroc_list_node* b;
+    eroc_list_node* c;
+
+    /* we can create the list. */
+    TEST_ASSERT(0 == eroc_list_create(&list, &test_node_release));
+
+    /* Preconditions: the list is empty. */
+    TEST_EXPECT(0 == list->count);
+    TEST_EXPECT(NULL == list->head);
+    TEST_EXPECT(NULL == list->tail);
+
+    /* Create and insert a. */
+    TEST_ASSERT(0 == test_node_create(&a));
+    eroc_list_insert(list, a);
+
+    /* Postconditions: there is one element in the list. */
+    TEST_EXPECT(1 == list->count);
+    TEST_EXPECT(a == list->head);
+    TEST_EXPECT(a == list->tail);
+    TEST_EXPECT(NULL == a->prev);
+    TEST_EXPECT(NULL == a->next);
+
+    /* Create and insert b. */
+    TEST_ASSERT(0 == test_node_create(&b));
+    eroc_list_insert(list, b);
+
+    /* Postconditions: there are two element in the list, b <--> a */
+    TEST_EXPECT(2 == list->count);
+    TEST_EXPECT(b == list->head);
+    TEST_EXPECT(a == list->tail);
+    TEST_EXPECT(b == a->prev);
+    TEST_EXPECT(NULL == a->next);
+    TEST_EXPECT(NULL == b->prev);
+    TEST_EXPECT(a == b->next);
+
+    /* Create and insert c. */
+    TEST_ASSERT(0 == test_node_create(&c));
+    eroc_list_insert(list, c);
+
+    /* Postconditions: there are two element in the list, c <--> b <--> a */
+    TEST_EXPECT(3 == list->count);
+    TEST_EXPECT(c == list->head);
+    TEST_EXPECT(a == list->tail);
+    TEST_EXPECT(b == a->prev);
+    TEST_EXPECT(NULL == a->next);
+    TEST_EXPECT(c == b->prev);
+    TEST_EXPECT(a == b->next);
+    TEST_EXPECT(NULL == c->prev);
+    TEST_EXPECT(b == c->next);
+
+    /* we can release the list. */
+    TEST_ASSERT(0 == eroc_list_release(list));
+}
