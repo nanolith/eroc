@@ -229,7 +229,7 @@ TEST(repeated_list_insert)
     TEST_ASSERT(0 == test_node_create(&b));
     eroc_list_insert(list, b);
 
-    /* Postconditions: there are two element in the list, b <--> a */
+    /* Postconditions: there are two elements in the list, b <--> a */
     TEST_EXPECT(2 == list->count);
     TEST_EXPECT(b == list->head);
     TEST_EXPECT(a == list->tail);
@@ -242,7 +242,7 @@ TEST(repeated_list_insert)
     TEST_ASSERT(0 == test_node_create(&c));
     eroc_list_insert(list, c);
 
-    /* Postconditions: there are two element in the list, c <--> b <--> a */
+    /* Postconditions: there are three elements in the list, c <--> b <--> a */
     TEST_EXPECT(3 == list->count);
     TEST_EXPECT(c == list->head);
     TEST_EXPECT(a == list->tail);
@@ -290,7 +290,7 @@ TEST(repeated_list_append)
     TEST_ASSERT(0 == test_node_create(&b));
     eroc_list_append(list, b);
 
-    /* Postconditions: there are two element in the list, a <--> b */
+    /* Postconditions: there are two elements in the list, a <--> b */
     TEST_EXPECT(2 == list->count);
     TEST_EXPECT(a == list->head);
     TEST_EXPECT(b == list->tail);
@@ -303,7 +303,7 @@ TEST(repeated_list_append)
     TEST_ASSERT(0 == test_node_create(&c));
     eroc_list_append(list, c);
 
-    /* Postconditions: there are two element in the list, a <--> b <--> c */
+    /* Postconditions: there are three elements in the list, a <--> b <--> c */
     TEST_EXPECT(3 == list->count);
     TEST_EXPECT(a == list->head);
     TEST_EXPECT(c == list->tail);
