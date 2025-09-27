@@ -88,10 +88,8 @@ int eroc_buffer_release(eroc_buffer* buffer);
  *                          if this line should be appended at the end of the
  *                          buffer.
  * \param line              The line to append.
- *
- * \returns 0 on success and non-zero on failure.
  */
-int eroc_buffer_append(
+void eroc_buffer_append(
     eroc_buffer* buffer, eroc_buffer_line* after, eroc_buffer_line* line);
 
 /**
