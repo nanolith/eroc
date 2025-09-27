@@ -80,6 +80,20 @@ int eroc_buffer_create(eroc_buffer** buffer);
  */
 int eroc_buffer_release(eroc_buffer* buffer);
 
+/**
+ * \brief Append the given line to the given buffer, after the given line.
+ *
+ * \param buffer            The buffer for this append operation.
+ * \param after             The line after this line should be appended, or NULL
+ *                          if this line should be appended at the end of the
+ *                          buffer.
+ * \param line              The line to append.
+ *
+ * \returns 0 on success and non-zero on failure.
+ */
+int eroc_buffer_append(
+    eroc_buffer* buffer, eroc_buffer_line* after, eroc_buffer_line* line);
+
 /* C++ compatibility. */
 # ifdef   __cplusplus
 }
