@@ -28,6 +28,16 @@ struct eroc_buffer_line
 };
 
 /**
+ * \brief A buffer is a linked list of buffer lines.
+ */
+typedef struct eroc_buffer eroc_buffer;
+
+struct eroc_buffer
+{
+    eroc_list* lines;
+};
+
+/**
  * \brief Create a buffer line.
  *
  * \note This method takes ownership of the line string and will reclaim this
