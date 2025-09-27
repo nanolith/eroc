@@ -108,6 +108,21 @@ int eroc_buffer_append(
 int eroc_buffer_insert(
     eroc_buffer* buffer, eroc_buffer_line* before, eroc_buffer_line* line);
 
+/**
+ * \brief Replace oldline with newline.
+ *
+ * \note After this operation, the caller owns oldline.
+ *
+ * \param buffer            The buffer for this replace operation.
+ * \param oldline           The line to replace, owned by caller on success.
+ * \param newline           The line that \p oldline is replaced with, owned by
+ *                          the buffer on success.
+ *
+ * \returns 0 on success and non-zero on failure.
+ */
+int eroc_buffer_replace(
+    eroc_buffer* buffer, eroc_buffer_line* oldline, eroc_buffer_line* newline);
+
 /* C++ compatibility. */
 # ifdef   __cplusplus
 }
