@@ -39,7 +39,7 @@ struct eroc_buffer
     int flags;
 };
 
-#define EROC_BUFFER_FLAG_DIRTY          0x0001
+#define EROC_BUFFER_FLAG_MODIFIED       0x0001
 
 /**
  * \brief Create a buffer line.
