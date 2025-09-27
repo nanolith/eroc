@@ -242,6 +242,51 @@ TEST(a_append_after_NULL)
 }
 
 /**
+ * \brief b insert before NULL results in ab.
+ */
+TEST(b_append_after_NULL)
+{
+    eroc_list* list;
+    eroc_list_node* a;
+    eroc_list_node* b;
+
+    /* we can create the list. */
+    TEST_ASSERT(0 == eroc_list_create(&list, &test_node_release));
+
+    /* Preconditions: the list is empty. */
+    TEST_EXPECT(0 == list->count);
+    TEST_EXPECT(NULL == list->head);
+    TEST_EXPECT(NULL == list->tail);
+
+    /* Create and append b. */
+    TEST_ASSERT(0 == test_node_create(&b));
+    eroc_list_append(list, b);
+
+    /* Postconditions: there is one element in the list. */
+    TEST_EXPECT(1 == list->count);
+    TEST_EXPECT(b == list->head);
+    TEST_EXPECT(b == list->tail);
+    TEST_EXPECT(NULL == b->prev);
+    TEST_EXPECT(NULL == b->next);
+
+    /* Create and insert a. */
+    TEST_ASSERT(0 == test_node_create(&a));
+    eroc_list_insert_before(list, NULL, a);
+
+    /* Postconditions: there are two elements in the list. */
+    TEST_EXPECT(2 == list->count);
+    TEST_EXPECT(a == list->head);
+    TEST_EXPECT(b == list->tail);
+    TEST_EXPECT(NULL == a->prev);
+    TEST_EXPECT(b == a->next);
+    TEST_EXPECT(a == b->prev);
+    TEST_EXPECT(NULL == b->next);
+
+    /* we can release the list. */
+    TEST_ASSERT(0 == eroc_list_release(list));
+}
+
+/**
  * \brief Repeated list insert works as expected.
  */
 TEST(repeated_list_insert)
