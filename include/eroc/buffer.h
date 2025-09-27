@@ -28,6 +28,21 @@ struct eroc_buffer_line
 };
 
 /**
+ * \brief Create a buffer line.
+ *
+ * \note This method takes ownership of the line string and will reclaim this
+ * string when it is released via \ref eroc_buffer_line_release.
+ *
+ * \param line              Pointer to the buffer line pointer to set with this
+ *                          buffer line on success.
+ * \param linestr           The string representation of this line, with newline
+ *                          removed.
+ *
+ * \returns 0 on success and non-zero on failure.
+ */
+int eroc_buffer_line_create(eroc_buffer_line** line, char* linestr);
+
+/**
  * \brief Release a buffer line.
  *
  * \param line              The buffer line to release.
