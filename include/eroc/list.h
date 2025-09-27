@@ -126,8 +126,6 @@ int eroc_list_node_delete(eroc_list* list, eroc_list_node* node);
  * \param newnode       The node to which replaces this node.
  *
  * \note After this call, the caller owns oldnode.
- *
- * \returns 0 on success and non-zero on failure.
  */
 void eroc_list_node_splice(
     eroc_list* list, eroc_list_node* oldnode, eroc_list_node* newnode);
