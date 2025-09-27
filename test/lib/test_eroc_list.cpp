@@ -29,6 +29,9 @@ TEST(create_release)
     /* we can create the list. */
     TEST_ASSERT(0 == eroc_list_create(&list, &test_node_release));
 
+    /* the release method is set. */
+    TEST_EXPECT(&test_node_release == list->eroc_list_node_release);
+
     /* we can release the list. */
     TEST_ASSERT(0 == eroc_list_release(list));
 }
