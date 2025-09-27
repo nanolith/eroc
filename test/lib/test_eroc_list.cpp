@@ -10,12 +10,28 @@
 #include <eroc/list.h>
 #include <minunit/minunit.h>
 #include <stdlib.h>
+#include <string.h>
 
 TEST_SUITE(eroc_list);
 
 static int test_node_release(eroc_list_node* node)
 {
     free(node);
+    return 0;
+}
+
+static int test_node_create(eroc_list_node** node)
+{
+    eroc_list_node* tmp;
+
+    tmp = (eroc_list_node*)malloc(sizeof(*tmp));
+    if (NULL == tmp)
+    {
+        return 1;
+    }
+    memset(tmp, 0, sizeof(*tmp));
+
+    *node = tmp;
     return 0;
 }
 
@@ -50,6 +66,37 @@ TEST(empty_list_invariant)
     TEST_EXPECT(0 == list->count);
     TEST_EXPECT(NULL == list->head);
     TEST_EXPECT(NULL == list->tail);
+
+    /* we can release the list. */
+    TEST_ASSERT(0 == eroc_list_release(list));
+}
+
+/**
+ * \brief If we insert a node into an empty list, the list is updated correctly.
+ */
+TEST(empty_list_insert)
+{
+    eroc_list* list;
+    eroc_list_node* a;
+
+    /* we can create the list. */
+    TEST_ASSERT(0 == eroc_list_create(&list, &test_node_release));
+
+    /* Preconditions: the list is empty. */
+    TEST_EXPECT(0 == list->count);
+    TEST_EXPECT(NULL == list->head);
+    TEST_EXPECT(NULL == list->tail);
+
+    /* Create and insert a. */
+    TEST_ASSERT(0 == test_node_create(&a));
+    eroc_list_insert(list, a);
+
+    /* Postconditions: there is one element in the list. */
+    TEST_EXPECT(1 == list->count);
+    TEST_EXPECT(a == list->head);
+    TEST_EXPECT(a == list->tail);
+    TEST_EXPECT(NULL == a->prev);
+    TEST_EXPECT(NULL == a->next);
 
     /* we can release the list. */
     TEST_ASSERT(0 == eroc_list_release(list));
