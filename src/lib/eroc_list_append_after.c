@@ -48,8 +48,8 @@ void eroc_list_append_after(
         list->tail = node;
     }
 
-    /* fix up head, if head is after or NULL. */
-    if (after == list->head)
+    /* fix up head, if head is NULL. */
+    if (NULL == list->head)
     {
         list->head = node;
     }
