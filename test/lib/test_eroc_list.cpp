@@ -101,3 +101,35 @@ TEST(empty_list_insert)
     /* we can release the list. */
     TEST_ASSERT(0 == eroc_list_release(list));
 }
+
+/**
+ * \brief If we append a node to the end of an empty list, the list is updated
+ * correctly.
+ */
+TEST(empty_list_append)
+{
+    eroc_list* list;
+    eroc_list_node* a;
+
+    /* we can create the list. */
+    TEST_ASSERT(0 == eroc_list_create(&list, &test_node_release));
+
+    /* Preconditions: the list is empty. */
+    TEST_EXPECT(0 == list->count);
+    TEST_EXPECT(NULL == list->head);
+    TEST_EXPECT(NULL == list->tail);
+
+    /* Create and append a. */
+    TEST_ASSERT(0 == test_node_create(&a));
+    eroc_list_append(list, a);
+
+    /* Postconditions: there is one element in the list. */
+    TEST_EXPECT(1 == list->count);
+    TEST_EXPECT(a == list->head);
+    TEST_EXPECT(a == list->tail);
+    TEST_EXPECT(NULL == a->prev);
+    TEST_EXPECT(NULL == a->next);
+
+    /* we can release the list. */
+    TEST_ASSERT(0 == eroc_list_release(list));
+}
