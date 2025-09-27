@@ -27,6 +27,15 @@ struct eroc_buffer_line
     char* line;
 };
 
+/**
+ * \brief Release a buffer line.
+ *
+ * \param line              The buffer line to release.
+ *
+ * \returns 0 on success and non-zero on failure.
+ */
+int eroc_buffer_line_release(eroc_buffer_line* line);
+
 /* C++ compatibility. */
 # ifdef   __cplusplus
 }
