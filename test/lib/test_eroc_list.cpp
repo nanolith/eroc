@@ -133,3 +133,34 @@ TEST(empty_list_append)
     /* we can release the list. */
     TEST_ASSERT(0 == eroc_list_release(list));
 }
+
+/**
+ * \brief empty_list_insert_before NULL is a synonym for empty_list_insert.
+ */
+TEST(empty_list_insert_before_NULL)
+{
+    eroc_list* list;
+    eroc_list_node* a;
+
+    /* we can create the list. */
+    TEST_ASSERT(0 == eroc_list_create(&list, &test_node_release));
+
+    /* Preconditions: the list is empty. */
+    TEST_EXPECT(0 == list->count);
+    TEST_EXPECT(NULL == list->head);
+    TEST_EXPECT(NULL == list->tail);
+
+    /* Create and insert a. */
+    TEST_ASSERT(0 == test_node_create(&a));
+    eroc_list_insert_before(list, NULL, a);
+
+    /* Postconditions: there is one element in the list. */
+    TEST_EXPECT(1 == list->count);
+    TEST_EXPECT(a == list->head);
+    TEST_EXPECT(a == list->tail);
+    TEST_EXPECT(NULL == a->prev);
+    TEST_EXPECT(NULL == a->next);
+
+    /* we can release the list. */
+    TEST_ASSERT(0 == eroc_list_release(list));
+}
