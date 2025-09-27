@@ -48,8 +48,8 @@ void eroc_list_insert_before(
         list->head = node;
     }
 
-    /* fix up tail, if tail is before or NULL. */
-    if (before == list->tail)
+    /* fix up tail, if tail is NULL. */
+    if (NULL == list->tail)
     {
         list->tail = node;
     }
