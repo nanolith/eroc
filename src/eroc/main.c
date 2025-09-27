@@ -7,7 +7,10 @@
  * distribution for the license terms under which this software is distributed.
  */
 
+#include <eroc/buffer.h>
 #include <stdio.h>
+
+eroc_buffer* global;
 
 /**
  * \brief Main entry point.
@@ -19,10 +22,31 @@
  */
 int main(int argc, char* argv[])
 {
-    (void)argc;
-    (void)argv;
+    int retval;
+    /* TODO - parse options. */
 
-    printf("Not yet implemented.\n");
-
-    return 0;
+    /* if a filename is specified, open it. */
+    if (argc > 1)
+    {
+        size_t size = 0U;
+        retval = eroc_buffer_load(&global, &size, argv[1]);
+        if (0 != retval)
+        {
+            printf("Error loading %s.\n", argv[1]);
+            return 1;
+        }
+        else
+        {
+            printf("%zu\n", size);
+        }
+    }
+    else
+    {
+        retval = eroc_buffer_create(&global);
+        if (0 != retval)
+        {
+            printf("Error creating buffer.\n");
+            return 1;
+        }
+    }
 }
