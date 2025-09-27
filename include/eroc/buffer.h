@@ -71,6 +71,15 @@ int eroc_buffer_line_release(eroc_buffer_line* line);
  */
 int eroc_buffer_create(eroc_buffer** buffer);
 
+/**
+ * \brief Release a buffer.
+ *
+ * \param buffer            The buffer to release.
+ *
+ * \returns 0 on success and non-zero on failure.
+ */
+int eroc_buffer_release(eroc_buffer* buffer);
+
 /* C++ compatibility. */
 # ifdef   __cplusplus
 }
