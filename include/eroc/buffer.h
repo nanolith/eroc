@@ -35,7 +35,7 @@ typedef struct eroc_buffer eroc_buffer;
 struct eroc_buffer
 {
     eroc_list* lines;
-    char* buffer_name;
+    char* name;
 };
 
 /**
