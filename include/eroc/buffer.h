@@ -127,11 +127,12 @@ void eroc_buffer_replace(
  *
  * \param buffer            Pointer to the buffer pointer to be set with this
  *                          loaded file on success.
+ * \param size              Set to the number of bytes read on success.
  * \param path              Path to the file to load.
  *
  * \returns 0 on success and non-zero on failure.
  */
-int eroc_buffer_load(eroc_buffer** buffer, const char* path);
+int eroc_buffer_load(eroc_buffer** buffer, size_t* size, const char* path);
 
 /**
  * \brief Save the contents of the given buffer into the file at the given path.
