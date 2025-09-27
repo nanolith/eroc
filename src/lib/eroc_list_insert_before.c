@@ -40,11 +40,14 @@ void eroc_list_insert_before(
     /* Inserting to head. */
     else
     {
+        node->next = list->head;
+
         if (NULL != list->head)
         {
-            node->prev = NULL;
             list->head->prev = node;
         }
+
+        node->prev = NULL;
         list->head = node;
     }
 
