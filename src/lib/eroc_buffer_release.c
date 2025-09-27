@@ -22,6 +22,11 @@ int eroc_buffer_release(eroc_buffer* buffer)
 {
     int retval;
 
+    if (NULL != buffer->name)
+    {
+        free(buffer->name);
+    }
+
     retval = eroc_list_release(buffer->lines);
 
     free(buffer);
