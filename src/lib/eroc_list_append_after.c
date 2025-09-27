@@ -40,11 +40,13 @@ void eroc_list_append_after(
     /* Appending to tail. */
     else
     {
+        node->prev = list->tail;
+
         if (NULL != list->tail)
         {
-            node->prev = list->tail;
             list->tail->next = node;
         }
+
         node->next = NULL;
         list->tail = node;
     }
