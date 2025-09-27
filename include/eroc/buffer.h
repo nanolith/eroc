@@ -130,6 +130,16 @@ void eroc_buffer_replace(
  */
 int eroc_buffer_load(eroc_buffer** buffer, const char* path);
 
+/**
+ * \brief Save the contents of the given buffer into the file at the given path.
+ *
+ * \param buffer            The buffer to save.
+ * \param path              The path to which the buffer is saved.
+ *
+ * \returns 0 on success and non-zero on failure.
+ */
+int eroc_buffer_save(const eroc_buffer* buffer, const char* path);
+
 /* C++ compatibility. */
 # ifdef   __cplusplus
 }
