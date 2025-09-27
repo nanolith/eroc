@@ -36,6 +36,7 @@ struct eroc_buffer
 {
     eroc_list* lines;
     char* name;
+    int flags;
 };
 
 /**
