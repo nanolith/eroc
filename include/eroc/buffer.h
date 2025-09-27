@@ -61,6 +61,16 @@ int eroc_buffer_line_create(eroc_buffer_line** line, char* linestr);
  */
 int eroc_buffer_line_release(eroc_buffer_line* line);
 
+/**
+ * \brief Create an empty buffer.
+ *
+ * \param buffer            Pointer to the buffer pointer to set with this
+ *                          buffer on success.
+ *
+ * \returns 0 on success and non-zero on failure.
+ */
+int eroc_buffer_create(eroc_buffer** buffer);
+
 /* C++ compatibility. */
 # ifdef   __cplusplus
 }
