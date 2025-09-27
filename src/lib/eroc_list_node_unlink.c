@@ -42,6 +42,10 @@ void eroc_list_node_unlink(eroc_list* list, eroc_list_node* node)
         }
         else
         {
+            /* here for consistency, but this branch can't happen. */
+            /* why? if node == list->tail && NULL == node->prev, then */
+            /* node ALSO == list->head, and the branch at the start of this */
+            /* function would have been taken.*/
             list->head = NULL;
         }
     }
