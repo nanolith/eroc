@@ -484,3 +484,48 @@ TEST(b_insert_a)
     /* we can release the list. */
     TEST_ASSERT(0 == eroc_list_release(list));
 }
+
+/**
+ * \brief Verify that we can append B after A.
+ */
+TEST(a_append_b)
+{
+    eroc_list* list;
+    eroc_list_node* a;
+    eroc_list_node* b;
+
+    /* we can create the list. */
+    TEST_ASSERT(0 == eroc_list_create(&list, &test_node_release));
+
+    /* Preconditions: the list is empty. */
+    TEST_EXPECT(0 == list->count);
+    TEST_EXPECT(NULL == list->head);
+    TEST_EXPECT(NULL == list->tail);
+
+    /* Create and append a. */
+    TEST_ASSERT(0 == test_node_create(&a));
+    eroc_list_append(list, a);
+
+    /* Postconditions: there is one element in the list. */
+    TEST_EXPECT(1 == list->count);
+    TEST_EXPECT(a == list->head);
+    TEST_EXPECT(a == list->tail);
+    TEST_EXPECT(NULL == a->prev);
+    TEST_EXPECT(NULL == a->next);
+
+    /* Create and append b. */
+    TEST_ASSERT(0 == test_node_create(&b));
+    eroc_list_append_after(list, a, b);
+
+    /* Postconditions: there are two elements in the list, a <--> b */
+    TEST_EXPECT(2 == list->count);
+    TEST_EXPECT(a == list->head);
+    TEST_EXPECT(b == list->tail);
+    TEST_EXPECT(NULL == a->prev);
+    TEST_EXPECT(b == a->next);
+    TEST_EXPECT(a == b->prev);
+    TEST_EXPECT(NULL == b->next);
+
+    /* we can release the list. */
+    TEST_ASSERT(0 == eroc_list_release(list));
+}
