@@ -118,6 +118,20 @@ void eroc_list_node_unlink(eroc_list* list, eroc_list_node* node);
  */
 int eroc_list_node_delete(eroc_list* list, eroc_list_node* node);
 
+/**
+ * \brief Splice the new node in place of the old node.
+ *
+ * \param list          The list to use for this splice operation.
+ * \param oldnode       The node to unlink.
+ * \param newnode       The node to which replaces this node.
+ *
+ * \note After this call, the caller owns oldnode.
+ *
+ * \returns 0 on success and non-zero on failure.
+ */
+void eroc_list_node_splice(
+    eroc_list* list, eroc_list_node* oldnode, eroc_list_node* newnode);
+
 /* C++ compatibility. */
 # ifdef   __cplusplus
 }
