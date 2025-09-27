@@ -118,6 +118,17 @@ void eroc_buffer_insert(
 void eroc_buffer_replace(
     eroc_buffer* buffer, eroc_buffer_line* oldline, eroc_buffer_line* newline);
 
+/**
+ * \brief Attempt to load a text file with the given path into a buffer.
+ *
+ * \param buffer            Pointer to the buffer pointer to be set with this
+ *                          loaded file on success.
+ * \param path              Path to the file to load.
+ *
+ * \returns 0 on success and non-zero on failure.
+ */
+int eroc_buffer_load(eroc_buffer** buffer, const char* path);
+
 /* C++ compatibility. */
 # ifdef   __cplusplus
 }
