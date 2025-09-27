@@ -35,3 +35,22 @@ TEST(create_release)
     /* we can release the list. */
     TEST_ASSERT(0 == eroc_list_release(list));
 }
+
+/**
+ * \brief By default, the list is empty and the count is 0.
+ */
+TEST(empty_list_invariant)
+{
+    eroc_list* list;
+
+    /* we can create the list. */
+    TEST_ASSERT(0 == eroc_list_create(&list, &test_node_release));
+
+    /* the list is empty. */
+    TEST_EXPECT(0 == list->count);
+    TEST_EXPECT(NULL == list->head);
+    TEST_EXPECT(NULL == list->tail);
+
+    /* we can release the list. */
+    TEST_ASSERT(0 == eroc_list_release(list));
+}
