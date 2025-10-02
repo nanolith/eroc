@@ -57,6 +57,15 @@ int eroc_command_parse(
     eroc_command** command, eroc_buffer* buffer, eroc_buffer_line* line,
     const char* input);
 
+/**
+ * \brief Release a command.
+ *
+ * \param command           The command to release.
+ *
+ * \returns 0 on success and non-zero on failure.
+ */
+int eroc_command_release(eroc_command* command);
+
 /* C++ compatibility. */
 # ifdef   __cplusplus
 }
