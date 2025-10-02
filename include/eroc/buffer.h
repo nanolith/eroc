@@ -40,7 +40,8 @@ struct eroc_buffer
     size_t lineno;
 };
 
-#define EROC_BUFFER_FLAG_MODIFIED       0x0001
+#define EROC_BUFFER_FLAG_MODIFIED                                       0x0001
+#define EROC_BUFFER_FLAG_QUIT_REQUESTED                                 0x8000
 
 /**
  * \brief Create a buffer line.
