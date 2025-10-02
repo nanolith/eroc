@@ -56,7 +56,7 @@ int eroc_command_function_print(eroc_command* command, size_t* lineno)
         count = command->end - start + 1;
     }
 
-    while (--count && NULL != line)
+    while (count-- && NULL != line)
     {
         printf("%s\n", line->line);
         line = (eroc_buffer_line*)line->hdr.next;
