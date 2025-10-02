@@ -9,6 +9,7 @@
 
 #include <eroc/buffer.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 /**
  * \brief Attempt to load a text file with the given path into a buffer.
@@ -51,7 +52,15 @@ int eroc_buffer_load(eroc_buffer** buffer, size_t* size, const char* path)
         ssize_t read_bytes = getline(&line, &linecap, fp);
         if (read_bytes < 0)
         {
+            free(line);
             break;
+        }
+        else if (read_bytes > 0)
+        {
+            if ('\n' == line[read_bytes - 1])
+            {
+                line[read_bytes - 1] = 0;
+            }
         }
 
         eroc_buffer_line* bufline;
