@@ -39,6 +39,7 @@ struct eroc_command
     eroc_buffer_line* line;
     eroc_buffer_line* undo;
     char* parameters;
+    eroc_command_fn command;
 };
 
 /* C++ compatibility. */
