@@ -17,9 +17,11 @@ enum parse_token
     TOK_EOF = -1,
     TOK_UNKNOWN = 0,
     TOK_COMMAND_PRINT,
+    TOK_COMMAND_QUIT,
 };
 
 static int command_token_read(const char** input);
+static int command_set(eroc_command* command, int tok);
 
 /**
  * \brief Given a command string, a buffer, and the current line, parse the
@@ -59,7 +61,12 @@ int eroc_command_parse(
         switch (tok)
         {
             case TOK_COMMAND_PRINT:
-                tmp->command_fn = &eroc_command_function_print;
+            case TOK_COMMAND_QUIT:
+                retval = command_set(tmp, tok);
+                if (0 != retval)
+                {
+                    goto done;
+                }
                 goto success;
 
             case TOK_EOF:
@@ -71,6 +78,7 @@ int eroc_command_parse(
 
 success:
     retval = 0;
+    tmp->parameters = input;
     *command = tmp;
     tmp = NULL;
 
@@ -112,8 +120,37 @@ static int command_token_read(const char** input)
             *input = inp + 1;
             return TOK_COMMAND_PRINT;
 
+        case 'q':
+            *input = inp + 1;
+            return TOK_COMMAND_QUIT;
+
         default:
             *input = inp;
             return TOK_UNKNOWN;
+    }
+}
+
+/**
+ * \brief Set the command based on the token.
+ *
+ * \param command               The command structure for this operation.
+ * \param tok                   The token to map to a command function.
+ *
+ * \returns 0 on success and non-zero on error.
+ */
+static int command_set(eroc_command* command, int tok)
+{
+    switch (tok)
+    {
+        case TOK_COMMAND_PRINT:
+            command->command_fn = &eroc_command_function_print;
+            return 0;
+
+        case TOK_COMMAND_QUIT:
+            command->command_fn = &eroc_command_function_quit;
+            return 0;
+
+        default:
+            return 3;
     }
 }
