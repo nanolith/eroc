@@ -80,6 +80,7 @@ static int repl(void)
         retval = read_command(&command, &input_line, line, stdin);
         if (-1 == retval)
         {
+            free(input_line);
             clearerr(stdin);
 
             if ((global->flags & EROC_BUFFER_FLAG_MODIFIED) && !first_quit)
