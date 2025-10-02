@@ -37,6 +37,7 @@ struct eroc_buffer
     eroc_list* lines;
     char* name;
     int flags;
+    eroc_buffer_line* cursor;
     size_t lineno;
 };
 
