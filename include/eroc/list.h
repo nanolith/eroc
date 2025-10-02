@@ -130,6 +130,18 @@ int eroc_list_node_delete(eroc_list* list, eroc_list_node* node);
 void eroc_list_node_splice(
     eroc_list* list, eroc_list_node* oldnode, eroc_list_node* newnode);
 
+/**
+ * \brief Attempt to get the node at the given 0-based index.
+ *
+ * \param node          Pointer to the node pointer to be updated on success.
+ * \param list          The list for this operation.
+ * \param index         The index to find.
+ *
+ * \returns 0 on success and non-zero on failure.
+ */
+int eroc_list_node_at(
+    eroc_list_node** node, eroc_list* list, size_t index);
+
 /* C++ compatibility. */
 # ifdef   __cplusplus
 }
