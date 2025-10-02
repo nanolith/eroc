@@ -27,7 +27,7 @@ typedef struct eroc_command eroc_command;
 /**
  * \brief A command function takes a command structure as an argument.
  */
-typedef int (*eroc_command_fn)(eroc_command* cmd, size_t* lineno);
+typedef int (*eroc_command_fn)(eroc_command* cmd);
 
 struct eroc_command
 {
@@ -76,21 +76,19 @@ int eroc_command_run(eroc_command* command);
  * \brief Print command function.
  *
  * \param command           The command instance.
- * \param lineno            The current line number.
  *
  * \returns 0 on success and non-zero on failure.
  */
-int eroc_command_function_print(eroc_command* command, size_t* lineno);
+int eroc_command_function_print(eroc_command* command);
 
 /**
  * \brief Attempt to quit this session.
  *
  * \param command           The command instance.
- * \param lineno            The current line number.
  *
  * \returns 0 on success and non-zero on failure.
  */
-int eroc_command_function_quit(eroc_command* command, size_t* lineno);
+int eroc_command_function_quit(eroc_command* command);
 
 /* C++ compatibility. */
 # ifdef   __cplusplus

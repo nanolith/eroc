@@ -18,5 +18,5 @@
  */
 int eroc_command_run(eroc_command* command)
 {
-    return command->command_fn(command, &command->buffer->lineno);
+    return command->command_fn(command);
 }

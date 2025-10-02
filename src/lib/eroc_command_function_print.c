@@ -14,13 +14,12 @@
  * \brief Print command function.
  *
  * \param command           The command instance.
- * \param lineno            The current line number.
  *
  * \returns 0 on success and non-zero on failure.
  */
-int eroc_command_function_print(eroc_command* command, size_t* lineno)
+int eroc_command_function_print(eroc_command* command)
 {
-    size_t start = *lineno;
+    size_t start = command->buffer->lineno;
     size_t count = 1;
     eroc_buffer_line* line = command->line;
 

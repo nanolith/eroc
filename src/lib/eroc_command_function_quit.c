@@ -14,14 +14,11 @@
  * \brief Attempt to quit this session.
  *
  * \param command           The command instance.
- * \param lineno            The current line number.
  *
  * \returns 0 on success and non-zero on failure.
  */
-int eroc_command_function_quit(eroc_command* command, size_t* lineno)
+int eroc_command_function_quit(eroc_command* command)
 {
-    (void)lineno;
-
     /* set the quit request flag, and let the top level decide what to do. */
     command->buffer->flags |= EROC_BUFFER_FLAG_QUIT_REQUESTED;
 
