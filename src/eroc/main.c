@@ -15,9 +15,7 @@
 eroc_buffer* global;
 
 static int repl(void);
-static int read_command(
-    eroc_command** command, char** input_line, eroc_buffer_line* line,
-    FILE* input);
+static int read_command(eroc_command** command, char** input_line, FILE* input);
 
 /**
  * \brief Main entry point.
@@ -70,14 +68,12 @@ static int repl(void)
     int retval;
     eroc_command* command;
     bool first_quit = false;
-    size_t lineno = 0;
     char* input_line;
-    eroc_buffer_line* line = (eroc_buffer_line*)global->lines->tail;
 
     do
     {
         /* read a command from standard input. */
-        retval = read_command(&command, &input_line, line, stdin);
+        retval = read_command(&command, &input_line, stdin);
         if (-1 == retval)
         {
             free(input_line);
@@ -103,7 +99,7 @@ static int repl(void)
         }
 
         /* evaluate the command. */
-        retval = eroc_command_run(command, &lineno);
+        retval = eroc_command_run(command, &global->lineno);
         if (0 != retval)
         {
             printf("?\n");
@@ -141,14 +137,12 @@ static int repl(void)
  * \param command               Pointer to the pointer to be set to the created
  *                              command on success.
  * \param input_line            The input line that is read.
- * \param line                  The current buffer line.
  * \param input                 The input file from which the command is read.
  *
  * \returns 0 on success and non-zero on error.
  */
 static int read_command(
-    eroc_command** command, char** input_line, eroc_buffer_line* line,
-    FILE* input)
+    eroc_command** command, char** input_line, FILE* input)
 {
     int retval;
     size_t linecap = 0;
@@ -163,7 +157,7 @@ static int read_command(
         goto done;
     }
 
-    retval = eroc_command_parse(command, global, line, *input_line);
+    retval = eroc_command_parse(command, global, global->cursor, *input_line);
     if (0 != retval)
     {
         goto cleanup_input_line;
