@@ -37,6 +37,7 @@ struct eroc_buffer
     eroc_list* lines;
     char* name;
     int flags;
+    size_t lineno;
 };
 
 #define EROC_BUFFER_FLAG_MODIFIED       0x0001
