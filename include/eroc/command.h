@@ -37,7 +37,7 @@ struct eroc_command
     bool end_provided;
     eroc_buffer* buffer;
     eroc_buffer_line* line;
-    char* parameters;
+    const char* parameters;
     eroc_command_fn command_fn;
 };
 
