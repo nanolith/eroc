@@ -14,11 +14,14 @@
  * \brief Print command function.
  *
  * \param command           The command instance.
+ * \param lineno            The current line number.
  *
  * \returns 0 on success and non-zero on failure.
  */
-int eroc_command_function_print(eroc_command* command)
+int eroc_command_function_print(eroc_command* command, size_t* lineno)
 {
+    (void)lineno;
+
     /* TODO - we haven't added code to go to a line in the buffer yet. */
     printf("%s\n", command->line->line);
 
