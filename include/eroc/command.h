@@ -82,6 +82,15 @@ int eroc_command_run(eroc_command* command);
 int eroc_command_function_print(eroc_command* command);
 
 /**
+ * \brief Advance the line by one, printing this new line.
+ *
+ * \param command           The command instance.
+ *
+ * \returns 0 on success and non-zero on failure.
+ */
+int eroc_command_function_advance(eroc_command* command);
+
+/**
  * \brief Attempt to quit this session.
  *
  * \param command           The command instance.
