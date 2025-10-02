@@ -7,10 +7,17 @@
  * distribution for the license terms under which this software is distributed.
  */
 
+#include <eroc/command.h>
 #include <eroc/buffer.h>
+#include <stdlib.h>
 #include <stdio.h>
 
 eroc_buffer* global;
+
+static int repl(void);
+static int read_command(
+    eroc_command** command, char** input_line, eroc_buffer_line* line,
+    FILE* input);
 
 /**
  * \brief Main entry point.
@@ -49,4 +56,125 @@ int main(int argc, char* argv[])
             return 1;
         }
     }
+
+    return repl();
+}
+
+/**
+ * \brief Read-Eval-Print loop for eroc.
+ *
+ * \returns 0 on success and non-zero on error.
+ */
+static int repl(void)
+{
+    int retval;
+    eroc_command* command;
+    bool first_quit = false;
+    size_t lineno = 0;
+    char* input_line;
+    eroc_buffer_line* line = (eroc_buffer_line*)global->lines->head;
+
+    do
+    {
+        /* read a command from standard input. */
+        retval = read_command(&command, &input_line, line, stdin);
+        if (-1 == retval)
+        {
+            clearerr(stdin);
+
+            if ((global->flags & EROC_BUFFER_FLAG_MODIFIED) && !first_quit)
+            {
+                /* ensure that the quit flag is cleared. */
+                global->flags &= (~EROC_BUFFER_FLAG_QUIT_REQUESTED);
+                first_quit = true;
+                printf("?\n");
+                continue;
+            }
+            else
+            {
+                return 0;
+            }
+        }
+        else if (0 != retval)
+        {
+            printf("?\n");
+            goto reset;
+        }
+
+        /* evaluate the command. */
+        retval = eroc_command_run(command, &lineno);
+        if (0 != retval)
+        {
+            printf("?\n");
+        }
+        /* has quit been requested on a modified buffer? */
+        else if (
+            (global->flags & EROC_BUFFER_FLAG_QUIT_REQUESTED)
+         && (global->flags & EROC_BUFFER_FLAG_MODIFIED)
+         && !first_quit)
+        {
+            /* ensure that the quit flag is cleared. */
+            global->flags &= (~EROC_BUFFER_FLAG_QUIT_REQUESTED);
+            first_quit = true;
+            printf("?\n");
+            (void)eroc_command_release(command);
+            free(input_line);
+            continue;
+        }
+
+        /* clean up. */
+        (void)eroc_command_release(command);
+        free(input_line);
+
+    reset:
+        /* reset first quit flag. */
+        first_quit = false;
+    } while (0 == (global->flags & EROC_BUFFER_FLAG_QUIT_REQUESTED));
+
+    return 0;
+}
+
+/**
+ * \brief Read a command from the given file handle.
+ *
+ * \param command               Pointer to the pointer to be set to the created
+ *                              command on success.
+ * \param input_line            The input line that is read.
+ * \param line                  The current buffer line.
+ * \param input                 The input file from which the command is read.
+ *
+ * \returns 0 on success and non-zero on error.
+ */
+static int read_command(
+    eroc_command** command, char** input_line, eroc_buffer_line* line,
+    FILE* input)
+{
+    int retval;
+    size_t linecap = 0;
+    ssize_t read_bytes;
+
+    *input_line = NULL;
+
+    read_bytes = getline(input_line, &linecap, input);
+    if (read_bytes < 0)
+    {
+        retval = -1;
+        goto done;
+    }
+
+    retval = eroc_command_parse(command, global, line, *input_line);
+    if (0 != retval)
+    {
+        goto cleanup_input_line;
+    }
+
+    /* success. */
+    retval = 0;
+    goto done;
+
+cleanup_input_line:
+    free(*input_line);
+
+done:
+    return retval;
 }
