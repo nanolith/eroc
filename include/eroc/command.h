@@ -66,6 +66,15 @@ int eroc_command_parse(
  */
 int eroc_command_release(eroc_command* command);
 
+/**
+ * \brief Print command function.
+ *
+ * \param command           The command instance.
+ *
+ * \returns 0 on success and non-zero on failure.
+ */
+int eroc_command_function_print(eroc_command* command);
+
 /* C++ compatibility. */
 # ifdef   __cplusplus
 }
