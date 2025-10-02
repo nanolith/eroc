@@ -140,6 +140,14 @@ void eroc_buffer_cursor_move_head(eroc_buffer* buffer);
 void eroc_buffer_cursor_move_tail(eroc_buffer* buffer);
 
 /**
+ * \brief Move the cursor to the given zero-indexed line number.
+ *
+ * \param buffer            The buffer for this operation.
+ * \param lineno            The line number for this buffer.
+ */
+int eroc_buffer_cursor_move(eroc_buffer* buffer, size_t lineno);
+
+/**
  * \brief Attempt to load a text file with the given path into a buffer.
  *
  * \param buffer            Pointer to the buffer pointer to be set with this
