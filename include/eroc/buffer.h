@@ -148,6 +148,13 @@ void eroc_buffer_cursor_move_tail(eroc_buffer* buffer);
 int eroc_buffer_cursor_move(eroc_buffer* buffer, size_t lineno);
 
 /**
+ * \brief Advance the cursor by one.
+ *
+ * \param buffer            The buffer for this operation.
+ */
+int eroc_buffer_cursor_advance(eroc_buffer* buffer);
+
+/**
  * \brief Attempt to load a text file with the given path into a buffer.
  *
  * \param buffer            Pointer to the buffer pointer to be set with this
