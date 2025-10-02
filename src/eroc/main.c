@@ -72,7 +72,7 @@ static int repl(void)
     bool first_quit = false;
     size_t lineno = 0;
     char* input_line;
-    eroc_buffer_line* line = (eroc_buffer_line*)global->lines->head;
+    eroc_buffer_line* line = (eroc_buffer_line*)global->lines->tail;
 
     do
     {
