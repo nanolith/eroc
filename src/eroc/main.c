@@ -157,7 +157,7 @@ static int read_command(
         goto done;
     }
 
-    retval = eroc_command_parse(command, global, global->cursor, *input_line);
+    retval = eroc_command_parse(command, global, *input_line);
     if (0 != retval)
     {
         goto cleanup_input_line;

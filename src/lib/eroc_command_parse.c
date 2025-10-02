@@ -24,20 +24,17 @@ static int command_token_read(const char** input);
 static int command_set(eroc_command* command, int tok);
 
 /**
- * \brief Given a command string, a buffer, and the current line, parse the
- * string into a command.
+ * \brief Given a command string and a buffer, parse the string into a command.
  *
  * \param command           Pointer to the command pointer to set with this
  *                          command on success.
  * \param buffer            The buffer on which this command is executed.
- * \param line              The current line.
  * \param input             The input string to parse.
  *
  * \returns 0 on success and non-zero on failure.
  */
 int eroc_command_parse(
-    eroc_command** command, eroc_buffer* buffer, eroc_buffer_line* line,
-    const char* input)
+    eroc_command** command, eroc_buffer* buffer, const char* input)
 {
     int retval, release_retval, tok;
     eroc_command* tmp;
@@ -53,7 +50,7 @@ int eroc_command_parse(
     /* Set initial fields. */
     memset(tmp, 0, sizeof(*tmp));
     tmp->buffer = buffer;
-    tmp->line = line;
+    tmp->line = buffer->cursor;
 
     do {
         /* read the first command token. */
