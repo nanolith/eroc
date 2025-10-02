@@ -126,6 +126,13 @@ void eroc_buffer_replace(
     eroc_buffer* buffer, eroc_buffer_line* oldline, eroc_buffer_line* newline);
 
 /**
+ * \brief Move the cursor to the head of the buffer.
+ *
+ * \param buffer            The buffer for this operation.
+ */
+void eroc_buffer_cursor_move_head(eroc_buffer* buffer);
+
+/**
  * \brief Attempt to load a text file with the given path into a buffer.
  *
  * \param buffer            Pointer to the buffer pointer to be set with this
