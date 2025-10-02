@@ -99,7 +99,7 @@ static int repl(void)
         }
 
         /* evaluate the command. */
-        retval = eroc_command_run(command, &global->lineno);
+        retval = eroc_command_run(command);
         if (0 != retval)
         {
             printf("?\n");

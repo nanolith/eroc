@@ -67,11 +67,10 @@ int eroc_command_release(eroc_command* command);
  * \brief Run a command.
  *
  * \param command           The command to run.
- * \param lineno            The current line number.
  *
  * \returns 0 on success and non-zero on failure.
  */
-int eroc_command_run(eroc_command* command, size_t* lineno);
+int eroc_command_run(eroc_command* command);
 
 /**
  * \brief Print command function.

@@ -13,11 +13,10 @@
  * \brief Run a command.
  *
  * \param command           The command to run.
- * \param lineno            The current line number.
  *
  * \returns 0 on success and non-zero on failure.
  */
-int eroc_command_run(eroc_command* command, size_t* lineno)
+int eroc_command_run(eroc_command* command)
 {
-    return command->command_fn(command, lineno);
+    return command->command_fn(command, &command->buffer->lineno);
 }
