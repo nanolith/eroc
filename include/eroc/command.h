@@ -82,7 +82,7 @@ int eroc_command_run(eroc_command* command);
 int eroc_command_function_print(eroc_command* command);
 
 /**
- * \brief Advance the line by one, printing this new line.
+ * \brief Advance the cursor by one, printing this new line.
  *
  * \param command           The command instance.
  *
