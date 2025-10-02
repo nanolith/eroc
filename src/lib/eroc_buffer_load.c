@@ -75,6 +75,9 @@ int eroc_buffer_load(eroc_buffer** buffer, size_t* size, const char* path)
         tmpsize += read_bytes + 1;
     }
 
+    /* move the cursor to the end of the buffer. */
+    eroc_buffer_cursor_move_tail(tmp);
+
     /* success. */
     *buffer = tmp;
     *size = tmpsize;
