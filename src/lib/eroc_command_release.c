@@ -19,11 +19,6 @@
  */
 int eroc_command_release(eroc_command* command)
 {
-    if (NULL != command->parameters)
-    {
-        free(command->parameters);
-    }
-
     free(command);
 
     return 0;
