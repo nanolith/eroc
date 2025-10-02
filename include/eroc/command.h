@@ -1,7 +1,7 @@
 /**
  * \file eroc/command.h
  *
- * \brief Command parsing, invocation, and simple undo.
+ * \brief Command parsing and invocation.
  *
  * \copyright 2025 Justin Handville.  Please see LICENSE.txt in this
  * distribution for the license terms under which this software is distributed.
@@ -37,7 +37,6 @@ struct eroc_command
     bool end_provided;
     eroc_buffer* buffer;
     eroc_buffer_line* line;
-    eroc_buffer_line* undo;
     char* parameters;
     eroc_command_fn command_fn;
 };
