@@ -133,6 +133,13 @@ void eroc_buffer_replace(
 void eroc_buffer_cursor_move_head(eroc_buffer* buffer);
 
 /**
+ * \brief Move the cursor to the tail of the buffer.
+ *
+ * \param buffer            The buffer for this operation.
+ */
+void eroc_buffer_cursor_move_tail(eroc_buffer* buffer);
+
+/**
  * \brief Attempt to load a text file with the given path into a buffer.
  *
  * \param buffer            Pointer to the buffer pointer to be set with this
