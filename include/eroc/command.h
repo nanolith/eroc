@@ -24,6 +24,11 @@ extern "C" {
  */
 typedef struct eroc_command eroc_command;
 
+/**
+ * \brief A command function takes a command structure as an argument.
+ */
+typedef int (*eroc_command_fn)(eroc_command* cmd);
+
 struct eroc_command
 {
     size_t start;
