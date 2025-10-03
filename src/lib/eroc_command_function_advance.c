@@ -19,17 +19,14 @@
  */
 int eroc_command_function_advance(eroc_command* command)
 {
-    /* can't advance past the last line. */
-    if (NULL == command->buffer->cursor->hdr.next)
-    {
-        return 1;
-    }
+    int retval;
 
     /* advance the cursor. */
-    /* TODO - replace with buffer function. */
-    command->buffer->cursor =
-        (eroc_buffer_line*)command->buffer->cursor->hdr.next;
-    ++command->buffer->lineno;
+    retval = eroc_buffer_cursor_advance(command->buffer);
+    if (0 != retval)
+    {
+        return retval;
+    }
 
     printf("%s\n", command->buffer->cursor->line);
 
