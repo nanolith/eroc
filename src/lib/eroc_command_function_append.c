@@ -68,6 +68,9 @@ int eroc_command_function_append(eroc_command* command)
             command->buffer, command->buffer->cursor, buffer_line);
         command->buffer->lineno += 1;
         command->buffer->cursor = buffer_line;
+
+        /* the buffer has been modified. */
+        command->buffer->flags |= EROC_BUFFER_FLAG_MODIFIED;
     }
 }
 
