@@ -57,6 +57,7 @@ int eroc_command_function_delete(eroc_command* command)
     while (count-- && NULL != command->buffer->cursor)
     {
         eroc_buffer_line_delete(command->buffer, command->buffer->cursor);
+        command->buffer->flags |= EROC_BUFFER_FLAG_MODIFIED;
     }
 
     return 0;
