@@ -88,6 +88,16 @@ int eroc_buffer_create(eroc_buffer** buffer);
 int eroc_buffer_release(eroc_buffer* buffer);
 
 /**
+ * \brief Set the buffer's name.
+ *
+ * \param buffer            The buffer for this operation.
+ * \param name              The name of the buffer.
+ *
+ * \returns 0 on success and non-zero on failure.
+ */
+int eroc_buffer_name_set(eroc_buffer* buffer, const char* name);
+
+/**
  * \brief Append the given line to the given buffer, after the given line.
  *
  * \param buffer            The buffer for this append operation.
