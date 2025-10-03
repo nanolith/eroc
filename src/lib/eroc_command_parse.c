@@ -24,6 +24,7 @@ enum parse_token
     TOK_COMMAND_MOVE,
     TOK_COMMAND_PRINT,
     TOK_COMMAND_QUIT,
+    TOK_COMMAND_WRITE,
     TOK_ADDRESS,
 };
 
@@ -88,6 +89,7 @@ int eroc_command_parse(
             case TOK_COMMAND_DISPLAY_LINE_NUMBER:
             case TOK_COMMAND_PRINT:
             case TOK_COMMAND_QUIT:
+            case TOK_COMMAND_WRITE:
                 retval = command_set(tmp, tok);
                 if (0 != retval)
                 {
@@ -192,6 +194,10 @@ static int command_token_read(
             *input = inp + 1;
             return TOK_COMMAND_QUIT;
 
+        case 'w':
+            *input = inp + 1;
+            return TOK_COMMAND_WRITE;
+
         case '-': case '+':
         case '0': case '1': case '2': case '3': case '4':
         case '5': case '6': case '7': case '8': case '9':
@@ -256,6 +262,10 @@ static int command_set(eroc_command* command, int tok)
 
         case TOK_COMMAND_QUIT:
             command->command_fn = &eroc_command_function_quit;
+            return 0;
+
+        case TOK_COMMAND_WRITE:
+            command->command_fn = &eroc_command_function_write;
             return 0;
 
         default:
