@@ -82,6 +82,15 @@ int eroc_command_run(eroc_command* command);
 int eroc_command_function_advance(eroc_command* command);
 
 /**
+ * \brief Append lines terminated by . to the buffer.
+ *
+ * \param command           The command instance.
+ *
+ * \returns 0 on success and non-zero on failure.
+ */
+int eroc_command_function_append(eroc_command* command);
+
+/**
  * \brief Display the line number.
  *
  * \param command           The command instance.
