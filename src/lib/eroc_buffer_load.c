@@ -72,7 +72,7 @@ int eroc_buffer_load(eroc_buffer** buffer, size_t* size, const char* path)
         }
 
         eroc_buffer_append(tmp, NULL, bufline);
-        tmpsize += read_bytes + 1;
+        tmpsize += read_bytes;
     }
 
     /* move the cursor to the end of the buffer. */
