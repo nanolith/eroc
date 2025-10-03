@@ -144,6 +144,15 @@ int eroc_command_function_print(eroc_command* command);
  */
 int eroc_command_function_quit(eroc_command* command);
 
+/**
+ * \brief Write the buffer to the named file.
+ *
+ * \param command           The command instance.
+ *
+ * \returns 0 on success and non-zero on failure.
+ */
+int eroc_command_function_write(eroc_command* command);
+
 /* C++ compatibility. */
 # ifdef   __cplusplus
 }
