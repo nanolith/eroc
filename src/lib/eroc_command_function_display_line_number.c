@@ -43,7 +43,7 @@ int eroc_command_function_display_line_number(eroc_command* command)
         return 1;
     }
 
-    printf("%zu\n", lineno);
+    printf("%zu\n", lineno + 1);
 
     return 0;
 }
