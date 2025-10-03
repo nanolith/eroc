@@ -19,8 +19,8 @@
  */
 int eroc_command_function_print(eroc_command* command)
 {
-    size_t start = command->buffer->lineno;
-    size_t count = 1;
+    unsigned long start = command->buffer->lineno;
+    unsigned long count = 1;
     eroc_buffer_line* line = command->line;
 
     /* is start provided? */

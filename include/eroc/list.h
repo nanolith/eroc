@@ -37,7 +37,7 @@ struct eroc_list
     int (*eroc_list_node_release)(eroc_list_node*);
     eroc_list_node* head;
     eroc_list_node* tail;
-    size_t count;
+    unsigned long count;
 };
 
 /**
@@ -140,7 +140,7 @@ void eroc_list_node_splice(
  * \returns 0 on success and non-zero on failure.
  */
 int eroc_list_node_at(
-    eroc_list_node** node, eroc_list* list, size_t index);
+    eroc_list_node** node, eroc_list* list, unsigned long index);
 
 /* C++ compatibility. */
 # ifdef   __cplusplus

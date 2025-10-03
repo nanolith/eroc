@@ -19,7 +19,7 @@
  */
 int eroc_command_function_display_line_number(eroc_command* command)
 {
-    size_t lineno;
+    unsigned long lineno;
 
     /* if the end address is provided, use it for the line number. */
     if (command->end_provided)
@@ -43,7 +43,7 @@ int eroc_command_function_display_line_number(eroc_command* command)
         return 1;
     }
 
-    printf("%zu\n", lineno + 1);
+    printf("%lu\n", lineno + 1);
 
     return 0;
 }

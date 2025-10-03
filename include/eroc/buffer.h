@@ -38,7 +38,7 @@ struct eroc_buffer
     char* name;
     int flags;
     eroc_buffer_line* cursor;
-    size_t lineno;
+    unsigned long lineno;
 };
 
 #define EROC_BUFFER_FLAG_MODIFIED                                       0x0001
@@ -145,7 +145,7 @@ void eroc_buffer_cursor_move_tail(eroc_buffer* buffer);
  * \param buffer            The buffer for this operation.
  * \param lineno            The line number for this buffer.
  */
-int eroc_buffer_cursor_move(eroc_buffer* buffer, size_t lineno);
+int eroc_buffer_cursor_move(eroc_buffer* buffer, unsigned long lineno);
 
 /**
  * \brief Advance the cursor by one.

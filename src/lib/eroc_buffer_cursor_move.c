@@ -15,7 +15,7 @@
  * \param buffer            The buffer for this operation.
  * \param lineno            The line number for this buffer.
  */
-int eroc_buffer_cursor_move(eroc_buffer* buffer, size_t lineno)
+int eroc_buffer_cursor_move(eroc_buffer* buffer, unsigned long lineno)
 {
     int retval =
         eroc_list_node_at(

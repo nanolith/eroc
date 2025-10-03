@@ -31,8 +31,8 @@ typedef int (*eroc_command_fn)(eroc_command* cmd);
 
 struct eroc_command
 {
-    size_t start;
-    size_t end;
+    unsigned long start;
+    unsigned long end;
     bool start_provided;
     bool end_provided;
     eroc_buffer* buffer;

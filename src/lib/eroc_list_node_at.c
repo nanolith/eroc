@@ -19,7 +19,7 @@
  * \returns 0 on success and non-zero on failure.
  */
 int eroc_list_node_at(
-    eroc_list_node** node, eroc_list* list, size_t index)
+    eroc_list_node** node, eroc_list* list, unsigned long index)
 {
     eroc_list_node* tmp = list->head;
 

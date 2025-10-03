@@ -44,7 +44,7 @@ static int command_set(eroc_command* command, int tok);
 static int parse_numeric_address(
     parse_address* addr, const char* start, const char* end);
 static int translate_relative_address(
-    size_t* abs, const parse_address* rel, const eroc_buffer* buffer);
+    unsigned long* abs, const parse_address* rel, const eroc_buffer* buffer);
 
 /**
  * \brief Given a command string and a buffer, parse the string into a command.
@@ -311,7 +311,7 @@ static int parse_numeric_address(
  * \param buffer            The buffer to which this relative address relates.
  */
 static int translate_relative_address(
-    size_t* abs, const parse_address* rel, const eroc_buffer* buffer)
+    unsigned long* abs, const parse_address* rel, const eroc_buffer* buffer)
 {
     if (rel->sign_set)
     {
