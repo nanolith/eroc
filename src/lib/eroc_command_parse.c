@@ -18,6 +18,7 @@ enum parse_token
     TOK_EOF = -1,
     TOK_UNKNOWN = 0,
     TOK_COMMAND_ADVANCE,
+    TOK_COMMAND_DISPLAY_LINE_NUMBER,
     TOK_COMMAND_MOVE,
     TOK_COMMAND_PRINT,
     TOK_COMMAND_QUIT,
@@ -82,6 +83,7 @@ int eroc_command_parse(
         {
             case TOK_COMMAND_PRINT:
             case TOK_COMMAND_QUIT:
+            case TOK_COMMAND_DISPLAY_LINE_NUMBER:
                 retval = command_set(tmp, tok);
                 if (0 != retval)
                 {
@@ -166,6 +168,10 @@ static int command_token_read(
             *input = inp;
             return TOK_EOF;
 
+        case '=':
+            *input = inp + 1;
+            return TOK_COMMAND_DISPLAY_LINE_NUMBER;
+
         case 'p':
             *input = inp + 1;
             return TOK_COMMAND_PRINT;
@@ -214,6 +220,10 @@ static int command_set(eroc_command* command, int tok)
     {
         case TOK_COMMAND_ADVANCE:
             command->command_fn = &eroc_command_function_advance;
+            return 0;
+
+        case TOK_COMMAND_DISPLAY_LINE_NUMBER:
+            command->command_fn = &eroc_command_function_display_line_number;
             return 0;
 
         case TOK_COMMAND_MOVE:
