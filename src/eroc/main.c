@@ -43,6 +43,11 @@ int main(int argc, char* argv[])
         else
         {
             printf("%zu\n", size);
+            retval = eroc_buffer_name_set(global, argv[1]);
+            if (0 != retval)
+            {
+                return 2;
+            }
         }
     }
     else
