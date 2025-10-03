@@ -17,6 +17,7 @@ enum parse_token
 {
     TOK_EOF = -1,
     TOK_UNKNOWN = 0,
+    TOK_COMMAND_ADVANCE,
     TOK_COMMAND_MOVE,
     TOK_COMMAND_PRINT,
     TOK_COMMAND_QUIT,
@@ -105,6 +106,14 @@ int eroc_command_parse(
                 goto success;
 
             case TOK_EOF:
+                /* advance the cursor by 1. */
+                retval = command_set(tmp, TOK_COMMAND_ADVANCE);
+                if (0 != retval)
+                {
+                    goto done;
+                }
+                goto success;
+
             case TOK_UNKNOWN:
                 retval = 2;
                 goto done;
@@ -194,16 +203,20 @@ static int command_set(eroc_command* command, int tok)
 {
     switch (tok)
     {
+        case TOK_COMMAND_ADVANCE:
+            command->command_fn = &eroc_command_function_advance;
+            return 0;
+
+        case TOK_COMMAND_MOVE:
+            command->command_fn = &eroc_command_function_move;
+            return 0;
+
         case TOK_COMMAND_PRINT:
             command->command_fn = &eroc_command_function_print;
             return 0;
 
         case TOK_COMMAND_QUIT:
             command->command_fn = &eroc_command_function_quit;
-            return 0;
-
-        case TOK_COMMAND_MOVE:
-            command->command_fn = &eroc_command_function_move;
             return 0;
 
         default:
