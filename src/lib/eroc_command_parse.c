@@ -37,7 +37,8 @@ union parse_value
     parse_address address;
 };
 
-static int command_token_read(parse_value* val, const char** input);
+static int command_token_read(
+    parse_value* val, const eroc_buffer* eroc_buffer, const char** input);
 static int command_set(eroc_command* command, int tok);
 static int parse_numeric_address(
     parse_address* addr, const char* start, const char* end);
@@ -76,7 +77,7 @@ int eroc_command_parse(
 
     do {
         /* read the first command token. */
-        tok = command_token_read(&val, &input);
+        tok = command_token_read(&val, buffer, &input);
         switch (tok)
         {
             case TOK_COMMAND_PRINT:
@@ -143,11 +144,13 @@ done:
  * \brief Read the next token from the stream.
  *
  * \param val               The parsed value if general.
+ * \param buffer            The buffer for this token.
  * \param input             The input stream, which is updated on read.
  *
  * \returns the next token read.
  */
-static int command_token_read(parse_value* val, const char** input)
+static int command_token_read(
+    parse_value* val, const eroc_buffer* buffer, const char** input)
 {
     int retval;
     const char* inp = *input;
@@ -183,6 +186,12 @@ static int command_token_read(parse_value* val, const char** input)
                 return TOK_UNKNOWN;
             }
             *input = end;
+            return TOK_ADDRESS;
+
+        case '$':
+            *input = inp + 1;
+            val->address.sign_set = false;
+            val->address.value = buffer->lines->count;
             return TOK_ADDRESS;
 
         default:
