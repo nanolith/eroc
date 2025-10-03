@@ -49,5 +49,11 @@ int eroc_command_function_write(eroc_command* command)
     /* output the size. */
     printf("%zu\n", write_size);
 
+    /* If this is the buffer name, then the buffer is no longer modified. */
+    if (name == command->buffer->name)
+    {
+        command->buffer->flags &= ~EROC_BUFFER_FLAG_MODIFIED;
+    }
+
     return 0;
 }
