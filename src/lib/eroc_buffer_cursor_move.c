@@ -1,5 +1,5 @@
 /**
- * \file lib/eroc_buffer_move.c
+ * \file lib/eroc_buffer_cursor_move.c
  *
  * \brief Move the cursor to the given zero-indexed line number.
  *
