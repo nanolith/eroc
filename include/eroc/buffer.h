@@ -100,6 +100,15 @@ void eroc_buffer_append(
     eroc_buffer* buffer, eroc_buffer_line* after, eroc_buffer_line* line);
 
 /**
+ * \brief Delete the given line from the buffer, adjusting the cursor as
+ * necessary.
+ *
+ * \param buffer            The buffer for this delete operation.
+ * \param line              The line to delete.
+ */
+void eroc_buffer_line_delete(eroc_buffer* buffer, eroc_buffer_line* line);
+
+/**
  * \brief Insert the given line into the given buffer, before the given line.
  *
  * \param buffer            The buffer for this insert operation.
