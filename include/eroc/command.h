@@ -91,6 +91,15 @@ int eroc_command_function_print(eroc_command* command);
 int eroc_command_function_advance(eroc_command* command);
 
 /**
+ * \brief Move the cursor to the given position denoted in start.
+ *
+ * \param command           The command instance.
+ *
+ * \returns 0 on success and non-zero on failure.
+ */
+int eroc_command_function_move(eroc_command* command);
+
+/**
  * \brief Attempt to quit this session.
  *
  * \param command           The command instance.
