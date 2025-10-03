@@ -91,15 +91,6 @@ int eroc_command_function_advance(eroc_command* command);
 int eroc_command_function_append(eroc_command* command);
 
 /**
- * \brief Insert lines terminated by . to the buffer.
- *
- * \param command           The command instance.
- *
- * \returns 0 on success and non-zero on failure.
- */
-int eroc_command_function_insert(eroc_command* command);
-
-/**
  * \brief Delete lines.
  *
  * \param command           The command instance.
@@ -116,6 +107,15 @@ int eroc_command_function_delete(eroc_command* command);
  * \returns 0 on success and non-zero on failure.
  */
 int eroc_command_function_display_line_number(eroc_command* command);
+
+/**
+ * \brief Insert lines terminated by . to the buffer.
+ *
+ * \param command           The command instance.
+ *
+ * \returns 0 on success and non-zero on failure.
+ */
+int eroc_command_function_insert(eroc_command* command);
 
 /**
  * \brief Move the cursor to the given position denoted in start.
