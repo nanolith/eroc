@@ -77,6 +77,7 @@ static int repl(void)
         if (-1 == retval)
         {
             free(input_line);
+            input_line = NULL;
             clearerr(stdin);
 
             if ((global->flags & EROC_BUFFER_FLAG_MODIFIED) && !first_quit)
@@ -116,12 +117,14 @@ static int repl(void)
             printf("?\n");
             (void)eroc_command_release(command);
             free(input_line);
+            input_line = NULL;
             continue;
         }
 
         /* clean up. */
         (void)eroc_command_release(command);
         free(input_line);
+        input_line = NULL;
 
     reset:
         /* reset first quit flag. */
@@ -155,6 +158,13 @@ static int read_command(
     {
         retval = -1;
         goto done;
+    }
+    else if (read_bytes > 0)
+    {
+        if ('\n' == (*input_line)[read_bytes - 1])
+        {
+            (*input_line)[read_bytes - 1] = 0;
+        }
     }
 
     retval = eroc_command_parse(command, global, *input_line);
