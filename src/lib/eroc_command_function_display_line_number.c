@@ -34,7 +34,7 @@ int eroc_command_function_display_line_number(eroc_command* command)
     /* otherwise, use the current line number. */
     else
     {
-        lineno = command->buffer->lineno;
+        lineno = command->buffer->lines->count - 1;
     }
 
     /* it's an error if this line number is out of range. */
