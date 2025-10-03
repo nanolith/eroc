@@ -162,6 +162,7 @@ static int command_token_read(parse_value* val, const char** input)
             *input = inp + 1;
             return TOK_COMMAND_QUIT;
 
+        case '-': case '+':
         case '0': case '1': case '2': case '3': case '4':
         case '5': case '6': case '7': case '8': case '9':
             end = inp + 1;
