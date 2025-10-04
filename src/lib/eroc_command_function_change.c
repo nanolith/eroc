@@ -25,7 +25,8 @@ int eroc_command_function_change(eroc_command* command)
     bool last_line = false;
 
     /* is this the last line in the buffer? */
-    if (NULL == command->buffer->cursor->hdr.next)
+    if (NULL == command->buffer->cursor
+     || NULL == command->buffer->cursor->hdr.next)
     {
         last_line = true;
     }
