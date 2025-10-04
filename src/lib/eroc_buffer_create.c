@@ -31,6 +31,9 @@ int eroc_buffer_create(eroc_buffer** buffer)
         goto done;
     }
 
+    /* clear buffer memory. */
+    memset(tmp, 0, sizeof(*tmp));
+
     retval =
         eroc_list_create(
             &tmp->lines, (int (*)(eroc_list_node*))&eroc_buffer_line_release);
