@@ -39,6 +39,19 @@ int eroc_command_function_write(eroc_command* command)
         }
     }
 
+    /* If the buffer was previously unnamed, then set it to this name. */
+    if (NULL == command->buffer->name)
+    {
+        retval = eroc_buffer_name_set(command->buffer, name);
+        if (0 != retval)
+        {
+            return retval;
+        }
+
+        /* use the buffer name. */
+        name = command->buffer->name;
+    }
+
     /* attempt to write this buffer. */
     retval = eroc_buffer_save(command->buffer, &write_size, name);
     if (0 != retval)
