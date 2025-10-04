@@ -19,6 +19,7 @@ enum parse_token
     TOK_UNKNOWN = 0,
     TOK_COMMAND_ADVANCE,
     TOK_COMMAND_APPEND,
+    TOK_COMMAND_CHANGE,
     TOK_COMMAND_DELETE,
     TOK_COMMAND_DISPLAY_LINE_NUMBER,
     TOK_COMMAND_INSERT,
@@ -86,6 +87,7 @@ int eroc_command_parse(
         switch (tok)
         {
             case TOK_COMMAND_APPEND:
+            case TOK_COMMAND_CHANGE:
             case TOK_COMMAND_DELETE:
             case TOK_COMMAND_DISPLAY_LINE_NUMBER:
             case TOK_COMMAND_INSERT:
@@ -184,6 +186,10 @@ static int command_token_read(
             *input = inp + 1;
             return TOK_COMMAND_APPEND;
 
+        case 'c':
+            *input = inp + 1;
+            return TOK_COMMAND_CHANGE;
+
         case 'd':
             *input = inp + 1;
             return TOK_COMMAND_DELETE;
@@ -248,6 +254,10 @@ static int command_set(eroc_command* command, int tok)
 
         case TOK_COMMAND_APPEND:
             command->command_fn = &eroc_command_function_append;
+            return 0;
+
+        case TOK_COMMAND_CHANGE:
+            command->command_fn = &eroc_command_function_change;
             return 0;
 
         case TOK_COMMAND_DELETE:
