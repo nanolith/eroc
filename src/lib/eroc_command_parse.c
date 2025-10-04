@@ -214,7 +214,7 @@ static int command_token_read(
         case '0': case '1': case '2': case '3': case '4':
         case '5': case '6': case '7': case '8': case '9':
             end = inp + 1;
-            while (*end && isnumber(*end))
+            while (*end && isdigit(*end))
                 ++end;
             retval = parse_numeric_address(&val->address, inp, end);
             if (0 != retval)
