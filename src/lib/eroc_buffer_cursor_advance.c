@@ -17,7 +17,7 @@
 int eroc_buffer_cursor_advance(eroc_buffer* buffer)
 {
     /* can't advance past the last line. */
-    if (NULL == buffer->cursor->hdr.next)
+    if (NULL == buffer->cursor || NULL == buffer->cursor->hdr.next)
     {
         return 1;
     }
