@@ -91,6 +91,15 @@ int eroc_command_function_advance(eroc_command* command);
 int eroc_command_function_append(eroc_command* command);
 
 /**
+ * \brief Change lines.
+ *
+ * \param command           The command instance.
+ *
+ * \returns 0 on success and non-zero on failure.
+ */
+int eroc_command_function_change(eroc_command* command);
+
+/**
  * \brief Delete lines.
  *
  * \param command           The command instance.
