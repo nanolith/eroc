@@ -22,4 +22,11 @@ void eroc_buffer_append(
     eroc_buffer* buffer, eroc_buffer_line* after, eroc_buffer_line* line)
 {
     eroc_list_append_after(buffer->lines, &after->hdr, &line->hdr);
+
+    /* if the cursor is NULL, set it to the head. */
+    if (NULL == buffer->cursor)
+    {
+        buffer->cursor = (eroc_buffer_line*)buffer->lines->head;
+        buffer->lineno = buffer->lines->count;
+    }
 }
