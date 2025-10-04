@@ -35,7 +35,14 @@ int eroc_command_function_move(eroc_command* command)
     }
 
     /* output the line. */
-    printf("%s\n", command->buffer->cursor->line);
+    if (NULL != command->buffer->cursor)
+    {
+        printf("%s\n", command->buffer->cursor->line);
+    }
+    else
+    {
+        printf("\n");
+    }
 
     return 0;
 }
