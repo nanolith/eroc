@@ -39,6 +39,12 @@ int eroc_command_function_insert(eroc_command* command)
         }
     }
 
+    /* Treat an insert into an empty buffer as an append. */
+    if (NULL == command->buffer->cursor)
+    {
+        return eroc_command_function_append(command);
+    }
+
     for (;;)
     {
         /* read an insert line from standard input. */
