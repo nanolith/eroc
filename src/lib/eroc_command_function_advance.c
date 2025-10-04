@@ -28,7 +28,14 @@ int eroc_command_function_advance(eroc_command* command)
         return retval;
     }
 
-    printf("%s\n", command->buffer->cursor->line);
+    if (NULL != command->buffer->cursor)
+    {
+        printf("%s\n", command->buffer->cursor->line);
+    }
+    else
+    {
+        printf("\n");
+    }
 
     return 0;
 }
