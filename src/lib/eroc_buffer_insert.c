@@ -22,4 +22,11 @@ void eroc_buffer_insert(
     eroc_buffer* buffer, eroc_buffer_line* before, eroc_buffer_line* line)
 {
     eroc_list_insert_before(buffer->lines, &before->hdr, &line->hdr);
+
+    /* if the cursor is NULL, set it to the tail. */
+    if (NULL == buffer->cursor)
+    {
+        buffer->cursor = (eroc_buffer_line*)buffer->lines->tail;
+        buffer->lineno = buffer->lines->count;
+    }
 }
