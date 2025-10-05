@@ -163,6 +163,20 @@ int eroc_regex_ast_node_star_create(
 int eroc_regex_ast_node_plus_create(
     eroc_regex_ast_node** node, eroc_regex_ast_node* child);
 
+/**
+ * \brief Create an optional AST node.
+ *
+ * \note On success, the created node takes ownership of the child node.
+ *
+ * \param node          Pointer to the AST node pointer to set to the created
+ *                      node on success.
+ * \param plus          The child of this optional node.
+ *
+ * \returns 0 on success and non-zero on failure.
+ */
+int eroc_regex_ast_node_optional_create(
+    eroc_regex_ast_node** node, eroc_regex_ast_node* child);
+
 /* C++ compatibility. */
 # ifdef   __cplusplus
 }
