@@ -219,3 +219,32 @@ TEST(create_release_optional)
     /* we can release this node. */
     eroc_regex_ast_node_release(node);
 }
+
+/**
+ * \brief We should be able to create and release a capture AST node.
+ */
+TEST(create_release_capture)
+{
+    eroc_regex_ast_node* node = nullptr;
+    eroc_regex_ast_node* child = nullptr;
+    const char CHILD = 'a';
+    const int GROUP_INDEX = 2;
+
+    /* create the child char literal. */
+    TEST_ASSERT(0 == eroc_regex_ast_node_literal_create(&child, CHILD));
+
+    /* create the capture node. */
+    TEST_ASSERT(
+        0 == eroc_regex_ast_node_capture_create(&node, child, GROUP_INDEX));
+
+    /* the node is not NULL. */
+    TEST_ASSERT(nullptr != node);
+
+    /* the node type is CAPTURE. */
+    TEST_EXPECT(EROC_REGEX_AST_CAPTURE == node->type);
+    TEST_EXPECT(child == node->data.capture.child);
+    TEST_EXPECT(GROUP_INDEX == node->data.capture.group_index);
+
+    /* we can release this node. */
+    eroc_regex_ast_node_release(node);
+}
