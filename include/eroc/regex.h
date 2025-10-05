@@ -10,6 +10,8 @@
 
 #pragma once
 
+#include <stdint.h>
+
 /* C++ compatibility. */
 # ifdef   __cplusplus
 extern "C" {
@@ -57,6 +59,12 @@ struct eroc_regex_ast_node
             eroc_regex_ast_node* child;
             int group_index;
         } capture;
+        struct
+        {
+            /* 256 bytes in ASCII / 8 bits per byte = 32 bytes. */
+            /* 32 bytes / 4 bytes per uint32_t = 8 uint32_t values. */
+            uint32_t members[8];
+        } char_class;
     } data;
 };
 
