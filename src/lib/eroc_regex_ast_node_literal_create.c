@@ -8,8 +8,6 @@
  */
 
 #include <eroc/regex.h>
-#include <stdlib.h>
-#include <string.h>
 
 /**
  * \brief Create a char literal AST node.
