@@ -31,3 +31,25 @@ TEST(create_release_empty)
     /* we can release this node. */
     eroc_regex_ast_node_release(node);
 }
+
+/**
+ * \brief We should be able to create and release a char literal AST node.
+ */
+TEST(create_release_literal)
+{
+    eroc_regex_ast_node* node = nullptr;
+    const char LITERAL = 'a';
+
+    /* we can create a char literal node. */
+    TEST_ASSERT(0 == eroc_regex_ast_node_literal_create(&node, LITERAL));
+
+    /* the node is not NULL. */
+    TEST_ASSERT(nullptr != node);
+
+    /* the node type is LITERAL. */
+    TEST_EXPECT(EROC_REGEX_AST_LITERAL == node->type);
+    TEST_EXPECT(LITERAL == node->data.literal);
+
+    /* we can release this node. */
+    eroc_regex_ast_node_release(node);
+}
