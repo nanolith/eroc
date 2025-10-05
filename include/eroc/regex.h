@@ -40,6 +40,10 @@ typedef struct eroc_regex_ast_node eroc_regex_ast_node;
 struct eroc_regex_ast_node
 {
     int type;
+    union
+    {
+        char literal;
+    } data;
 };
 
 /* C++ compatibility. */
