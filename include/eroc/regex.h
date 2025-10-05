@@ -89,6 +89,23 @@ int eroc_regex_ast_node_empty_create(eroc_regex_ast_node** node);
  */
 int eroc_regex_ast_node_literal_create(eroc_regex_ast_node** node, char c);
 
+/**
+ * \brief Create a concat AST node.
+ *
+ * \note On success, the created node takes ownership of the left and right
+ * nodes.
+ *
+ * \param node          Pointer to the AST node pointer to set to the created
+ *                      node on success.
+ * \param left          The left-hand side of the concat.
+ * \param right         The right-hand side of the concat.
+ *
+ * \returns 0 on success and non-zero on failure.
+ */
+int eroc_regex_ast_node_concat_create(
+    eroc_regex_ast_node** node, eroc_regex_ast_node* left,
+    eroc_regex_ast_node* right);
+
 /* C++ compatibility. */
 # ifdef   __cplusplus
 }
