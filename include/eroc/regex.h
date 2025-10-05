@@ -48,6 +48,10 @@ struct eroc_regex_ast_node
             eroc_regex_ast_node* left;
             eroc_regex_ast_node* right;
         } binary;
+        struct
+        {
+            eroc_regex_ast_node* child;
+        } unary;
     } data;
 };
 
