@@ -68,6 +68,16 @@ struct eroc_regex_ast_node
     } data;
 };
 
+/**
+ * \brief Create an empty AST node.
+ *
+ * \param node          Pointer to the AST node pointer to set to the created
+ *                      node on success.
+ *
+ * \returns 0 on success and non-zero on failure.
+ */
+int eroc_regex_ast_node_empty_create(eroc_regex_ast_node** node);
+
 /* C++ compatibility. */
 # ifdef   __cplusplus
 }
