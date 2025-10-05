@@ -53,3 +53,35 @@ TEST(create_release_literal)
     /* we can release this node. */
     eroc_regex_ast_node_release(node);
 }
+
+/**
+ * \brief We should be able to create and release a concat AST node.
+ */
+TEST(create_release_concat)
+{
+    eroc_regex_ast_node* node = nullptr;
+    eroc_regex_ast_node* left = nullptr;
+    eroc_regex_ast_node* right = nullptr;
+    const char LEFT = 'a';
+    const char RIGHT = 'b';
+
+    /* create the left char literal. */
+    TEST_ASSERT(0 == eroc_regex_ast_node_literal_create(&left, LEFT));
+
+    /* create the right char literal. */
+    TEST_ASSERT(0 == eroc_regex_ast_node_literal_create(&right, RIGHT));
+
+    /* create the concat node. */
+    TEST_ASSERT(0 == eroc_regex_ast_node_concat_create(&node, left, right));
+
+    /* the node is not NULL. */
+    TEST_ASSERT(nullptr != node);
+
+    /* the node type is CONCAT. */
+    TEST_EXPECT(EROC_REGEX_AST_CONCAT == node->type);
+    TEST_EXPECT(left == node->data.binary.left);
+    TEST_EXPECT(right == node->data.binary.right);
+
+    /* we can release this node. */
+    eroc_regex_ast_node_release(node);
+}
