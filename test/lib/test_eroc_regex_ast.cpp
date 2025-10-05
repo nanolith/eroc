@@ -141,3 +141,29 @@ TEST(create_release_char_class)
     /* we can release this node. */
     eroc_regex_ast_node_release(node);
 }
+
+/**
+ * \brief We should be able to create and release a star AST node.
+ */
+TEST(create_release_star)
+{
+    eroc_regex_ast_node* node = nullptr;
+    eroc_regex_ast_node* child = nullptr;
+    const char CHILD = 'a';
+
+    /* create the child char literal. */
+    TEST_ASSERT(0 == eroc_regex_ast_node_literal_create(&child, CHILD));
+
+    /* create the star node. */
+    TEST_ASSERT(0 == eroc_regex_ast_node_star_create(&node, child));
+
+    /* the node is not NULL. */
+    TEST_ASSERT(nullptr != node);
+
+    /* the node type is STAR. */
+    TEST_EXPECT(EROC_REGEX_AST_STAR == node->type);
+    TEST_EXPECT(child == node->data.unary.child);
+
+    /* we can release this node. */
+    eroc_regex_ast_node_release(node);
+}
