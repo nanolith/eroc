@@ -30,7 +30,7 @@ int eroc_regex_ast_node_capture_create(
         return retval;
     }
 
-    (*node)->type = EROC_REGEX_AST_OPTIONAL;
+    (*node)->type = EROC_REGEX_AST_CAPTURE;
     (*node)->data.capture.child = child;
     (*node)->data.capture.group_index = group_index;
 
