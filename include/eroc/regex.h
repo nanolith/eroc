@@ -24,6 +24,7 @@ enum eroc_regex_ast_node_type
     EROC_REGEX_AST_STAR,
     EROC_REGEX_AST_PLUS,
     EROC_REGEX_AST_OPTIONAL,
+    EROC_REGEX_AST_CAPTURE
 };
 
 /* C++ compatibility. */
