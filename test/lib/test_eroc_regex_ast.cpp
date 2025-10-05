@@ -193,3 +193,29 @@ TEST(create_release_plus)
     /* we can release this node. */
     eroc_regex_ast_node_release(node);
 }
+
+/**
+ * \brief We should be able to create and release an optional AST node.
+ */
+TEST(create_release_optional)
+{
+    eroc_regex_ast_node* node = nullptr;
+    eroc_regex_ast_node* child = nullptr;
+    const char CHILD = 'a';
+
+    /* create the child char literal. */
+    TEST_ASSERT(0 == eroc_regex_ast_node_literal_create(&child, CHILD));
+
+    /* create the optional node. */
+    TEST_ASSERT(0 == eroc_regex_ast_node_optional_create(&node, child));
+
+    /* the node is not NULL. */
+    TEST_ASSERT(nullptr != node);
+
+    /* the node type is OPTIONAL. */
+    TEST_EXPECT(EROC_REGEX_AST_OPTIONAL == node->type);
+    TEST_EXPECT(child == node->data.unary.child);
+
+    /* we can release this node. */
+    eroc_regex_ast_node_release(node);
+}
