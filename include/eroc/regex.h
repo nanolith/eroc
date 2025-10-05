@@ -43,6 +43,11 @@ struct eroc_regex_ast_node
     union
     {
         char literal;
+        struct
+        {
+            eroc_regex_ast_node* left;
+            eroc_regex_ast_node* right;
+        } binary;
     } data;
 };
 
