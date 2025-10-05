@@ -9,6 +9,7 @@
 
 #include <eroc/regex.h>
 #include <minunit/minunit.h>
+#include <string.h>
 
 TEST_SUITE(eroc_regex_ast);
 
@@ -113,6 +114,29 @@ TEST(create_release_alternate)
     TEST_EXPECT(EROC_REGEX_AST_ALTERNATE == node->type);
     TEST_EXPECT(left == node->data.binary.left);
     TEST_EXPECT(right == node->data.binary.right);
+
+    /* we can release this node. */
+    eroc_regex_ast_node_release(node);
+}
+
+/**
+ * \brief We should be able to create and release a character class AST node.
+ */
+TEST(create_release_char_class)
+{
+    eroc_regex_ast_node* node = nullptr;
+    const uint32_t members[8] = {0, 1, 0, 0, 0, 0, 0, 0 };
+
+    /* create the char class node. */
+    TEST_ASSERT(0 == eroc_regex_ast_node_char_class_create(&node, members));
+
+    /* the node is not NULL. */
+    TEST_ASSERT(nullptr != node);
+
+    /* the node type is CHAR CLASS. */
+    TEST_EXPECT(EROC_REGEX_AST_CHAR_CLASS == node->type);
+    TEST_EXPECT(
+        0 == memcmp(members, node->data.char_class.members, sizeof(members)));
 
     /* we can release this node. */
     eroc_regex_ast_node_release(node);
