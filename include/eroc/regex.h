@@ -31,6 +31,17 @@ enum eroc_regex_ast_node_type
     EROC_REGEX_AST_CAPTURE
 };
 
+/**
+ * \brief The regular expression AST node is used by the parser to represent a
+ * regular expression operation.
+ */
+typedef struct eroc_regex_ast_node eroc_regex_ast_node;
+
+struct eroc_regex_ast_node
+{
+    int type;
+};
+
 /* C++ compatibility. */
 # ifdef   __cplusplus
 }
