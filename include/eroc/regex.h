@@ -191,6 +191,16 @@ int eroc_regex_ast_node_optional_create(
 int eroc_regex_ast_node_capture_create(
     eroc_regex_ast_node** node, eroc_regex_ast_node* child);
 
+/**
+ * \brief Release an AST node.
+ *
+ * \note This release mechanism is recursive; it also releases all child nodes
+ * it owns.
+ *
+ * \param node          The node to release.
+ */
+void eroc_regex_ast_node_release(eroc_regex_ast_node* node);
+
 /* C++ compatibility. */
 # ifdef   __cplusplus
 }
