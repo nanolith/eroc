@@ -78,6 +78,17 @@ struct eroc_regex_ast_node
  */
 int eroc_regex_ast_node_empty_create(eroc_regex_ast_node** node);
 
+/**
+ * \brief Create a char literal AST node.
+ *
+ * \param node          Pointer to the AST node pointer to set to the created
+ *                      node on success.
+ * \param c             The character literal.
+ *
+ * \returns 0 on success and non-zero on failure.
+ */
+int eroc_regex_ast_node_literal_create(eroc_regex_ast_node** node, char c);
+
 /* C++ compatibility. */
 # ifdef   __cplusplus
 }
