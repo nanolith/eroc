@@ -184,12 +184,13 @@ int eroc_regex_ast_node_optional_create(
  *
  * \param node          Pointer to the AST node pointer to set to the created
  *                      node on success.
- * \param plus          The child of this capture node.
+ * \param child         The child of this capture node.
+ * \param group_index   The group index for this capture node.
  *
  * \returns 0 on success and non-zero on failure.
  */
 int eroc_regex_ast_node_capture_create(
-    eroc_regex_ast_node** node, eroc_regex_ast_node* child);
+    eroc_regex_ast_node** node, eroc_regex_ast_node* child, int group_index);
 
 /**
  * \brief Release an AST node.
