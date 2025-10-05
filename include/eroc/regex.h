@@ -156,7 +156,7 @@ int eroc_regex_ast_node_star_create(
  *
  * \param node          Pointer to the AST node pointer to set to the created
  *                      node on success.
- * \param plus          The child of this plus node.
+ * \param child         The child of this plus node.
  *
  * \returns 0 on success and non-zero on failure.
  */
