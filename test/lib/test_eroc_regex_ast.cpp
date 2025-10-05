@@ -167,3 +167,29 @@ TEST(create_release_star)
     /* we can release this node. */
     eroc_regex_ast_node_release(node);
 }
+
+/**
+ * \brief We should be able to create and release a plus AST node.
+ */
+TEST(create_release_plus)
+{
+    eroc_regex_ast_node* node = nullptr;
+    eroc_regex_ast_node* child = nullptr;
+    const char CHILD = 'a';
+
+    /* create the child char literal. */
+    TEST_ASSERT(0 == eroc_regex_ast_node_literal_create(&child, CHILD));
+
+    /* create the plus node. */
+    TEST_ASSERT(0 == eroc_regex_ast_node_plus_create(&node, child));
+
+    /* the node is not NULL. */
+    TEST_ASSERT(nullptr != node);
+
+    /* the node type is PLUS. */
+    TEST_EXPECT(EROC_REGEX_AST_PLUS == node->type);
+    TEST_EXPECT(child == node->data.unary.child);
+
+    /* we can release this node. */
+    eroc_regex_ast_node_release(node);
+}
