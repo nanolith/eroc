@@ -20,6 +20,7 @@ enum eroc_regex_ast_node_type
     EROC_REGEX_AST_EMPTY,
     EROC_REGEX_AST_LITERAL,
     EROC_REGEX_AST_CONCAT,
+    EROC_REGEX_AST_ALTERNATE,
 };
 
 /* C++ compatibility. */
