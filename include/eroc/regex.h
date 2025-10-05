@@ -52,6 +52,11 @@ struct eroc_regex_ast_node
         {
             eroc_regex_ast_node* child;
         } unary;
+        struct
+        {
+            eroc_regex_ast_node* child;
+            int group_index;
+        } capture;
     } data;
 };
 
