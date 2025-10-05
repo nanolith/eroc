@@ -161,7 +161,7 @@ int eroc_regex_ast_node_star_create(
  * \returns 0 on success and non-zero on failure.
  */
 int eroc_regex_ast_node_plus_create(
-    eroc_regex_ast_node** node, eroc_regex_ast_node* plus);
+    eroc_regex_ast_node** node, eroc_regex_ast_node* child);
 
 /* C++ compatibility. */
 # ifdef   __cplusplus
