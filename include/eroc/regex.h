@@ -133,7 +133,7 @@ int eroc_regex_ast_node_alternate_create(
  * \returns 0 on success and non-zero on failure.
  */
 int eroc_regex_ast_node_char_class_create(
-    eroc_regex_ast_node** node, uint32_t members[8]);
+    eroc_regex_ast_node** node, const uint32_t members[8]);
 
 /**
  * \brief Create a star AST node.
