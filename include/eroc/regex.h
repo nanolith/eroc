@@ -15,6 +15,9 @@
 extern "C" {
 # endif /*__cplusplus*/
 
+/**
+ * \brief Types of AST nodes supported by the regular expression parser.
+ */
 enum eroc_regex_ast_node_type
 {
     EROC_REGEX_AST_EMPTY,
