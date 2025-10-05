@@ -85,3 +85,35 @@ TEST(create_release_concat)
     /* we can release this node. */
     eroc_regex_ast_node_release(node);
 }
+
+/**
+ * \brief We should be able to create and release an alternate AST node.
+ */
+TEST(create_release_alternate)
+{
+    eroc_regex_ast_node* node = nullptr;
+    eroc_regex_ast_node* left = nullptr;
+    eroc_regex_ast_node* right = nullptr;
+    const char LEFT = 'a';
+    const char RIGHT = 'b';
+
+    /* create the left char literal. */
+    TEST_ASSERT(0 == eroc_regex_ast_node_literal_create(&left, LEFT));
+
+    /* create the right char literal. */
+    TEST_ASSERT(0 == eroc_regex_ast_node_literal_create(&right, RIGHT));
+
+    /* create the alternate node. */
+    TEST_ASSERT(0 == eroc_regex_ast_node_alternate_create(&node, left, right));
+
+    /* the node is not NULL. */
+    TEST_ASSERT(nullptr != node);
+
+    /* the node type is ALTERNATE. */
+    TEST_EXPECT(EROC_REGEX_AST_ALTERNATE == node->type);
+    TEST_EXPECT(left == node->data.binary.left);
+    TEST_EXPECT(right == node->data.binary.right);
+
+    /* we can release this node. */
+    eroc_regex_ast_node_release(node);
+}
