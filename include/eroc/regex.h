@@ -147,7 +147,7 @@ int eroc_regex_ast_node_char_class_create(
  * \returns 0 on success and non-zero on failure.
  */
 int eroc_regex_ast_node_star_create(
-    eroc_regex_ast_node** node, eroc_regex_ast_node* star);
+    eroc_regex_ast_node** node, eroc_regex_ast_node* child);
 
 /**
  * \brief Create a plus AST node.
