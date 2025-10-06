@@ -10,6 +10,7 @@
 
 #pragma once
 
+#include <stddef.h>
 #include <stdint.h>
 
 /* C++ compatibility. */
@@ -67,6 +68,23 @@ struct eroc_regex_ast_node
             uint32_t members[8];
         } char_class;
     } data;
+};
+
+/**
+ * \brief The compiler data structure is used to represent state in the modified
+ * parser push-down automaton. Unlike a "true" PDA, this one also includes a
+ * separate nesting depth and combinator flag.
+ */
+typedef struct eroc_regex_compiler_instance eroc_regex_compiler_instance;
+
+struct eroc_regex_compiler_instance
+{
+    eroc_regex_ast_node* head;
+    eroc_regex_ast_node* ast;
+    const char* input;
+    size_t offset;
+    size_t nesting_depth;
+    int next_combinator;
 };
 
 /**
