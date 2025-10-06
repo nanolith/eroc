@@ -121,6 +121,16 @@ struct eroc_regex_compiler_instance
 int eroc_regex_ast_node_empty_create(eroc_regex_ast_node** node);
 
 /**
+ * \brief Create an any AST node.
+ *
+ * \param node          Pointer to the AST node pointer to set to the created
+ *                      node on success.
+ *
+ * \returns 0 on success and non-zero on failure.
+ */
+int eroc_regex_ast_node_any_create(eroc_regex_ast_node** node);
+
+/**
  * \brief Create a char literal AST node.
  *
  * \param node          Pointer to the AST node pointer to set to the created
