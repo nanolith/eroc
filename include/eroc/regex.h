@@ -41,6 +41,7 @@ typedef struct eroc_regex_ast_node eroc_regex_ast_node;
 
 struct eroc_regex_ast_node
 {
+    eroc_regex_ast_node* next;
     int type;
     union
     {
