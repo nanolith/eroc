@@ -51,6 +51,7 @@ enum eroc_regex_compiler_state
 {
     EROC_REGEX_COMPILER_STATE_INIT,
     EROC_REGEX_COMPILER_STATE_SCAN,
+    EROC_REGEX_COMPILER_STATE_IN_CHAR_CLASS,
 };
 
 /**
