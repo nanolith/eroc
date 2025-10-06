@@ -24,6 +24,7 @@ void eroc_regex_ast_node_release(eroc_regex_ast_node* node)
     {
         case EROC_REGEX_AST_EMPTY:
         case EROC_REGEX_AST_LITERAL:
+        case EROC_REGEX_AST_ANY:
         case EROC_REGEX_AST_CHAR_CLASS:
             /* no sub-nodes. */
             break;
