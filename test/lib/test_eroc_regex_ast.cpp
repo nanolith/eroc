@@ -34,6 +34,26 @@ TEST(create_release_empty)
 }
 
 /**
+ * \brief We should be able to create and release an any AST node.
+ */
+TEST(create_release_any)
+{
+    eroc_regex_ast_node* node = nullptr;
+
+    /* we can create an any node. */
+    TEST_ASSERT(0 == eroc_regex_ast_node_any_create(&node));
+
+    /* the node is not NULL. */
+    TEST_ASSERT(nullptr != node);
+
+    /* the node type is ANY. */
+    TEST_EXPECT(EROC_REGEX_AST_ANY == node->type);
+
+    /* we can release this node. */
+    eroc_regex_ast_node_release(node);
+}
+
+/**
  * \brief We should be able to create and release a char literal AST node.
  */
 TEST(create_release_literal)
