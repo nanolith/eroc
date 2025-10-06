@@ -255,6 +255,20 @@ int eroc_regex_ast_node_capture_create(
 void eroc_regex_ast_node_release(eroc_regex_ast_node* node);
 
 /**
+ * \brief Create a compiler instance backed by the given input string.
+ *
+ * \note The input string remains owned by the caller.
+ *
+ * \param inst          Pointer to the instance pointer to be populated with
+ *                      this created instance on success.
+ * \param input         The input string that this compiler transforms.
+ *
+ * \returns 0 on success and non-zero on failure.
+ */
+int eroc_regex_compiler_instance_create(
+    eroc_regex_compiler_instance** inst, const char* input);
+
+/**
  * \brief Release a regular expression compiler instance.
  *
  * \param inst          The instance to release.
