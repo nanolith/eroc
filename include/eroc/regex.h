@@ -275,6 +275,17 @@ int eroc_regex_compiler_instance_create(
  */
 void eroc_regex_compiler_instance_release(eroc_regex_compiler_instance* inst);
 
+/**
+ * \brief Given an input string, create an AST for further processing.
+ *
+ * \param ast           Pointer to the AST pointer to be populated with the AST
+ *                      on success.
+ * \param input         The input string to parse.
+ *
+ * \returns 0 on success and non-zero on failure.
+ */
+int eroc_regex_compiler_parse(eroc_regex_ast_node** ast, const char* input);
+
 /* C++ compatibility. */
 # ifdef   __cplusplus
 }
