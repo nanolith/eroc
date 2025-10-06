@@ -50,6 +50,7 @@ enum eroc_regex_combinator_type
 enum eroc_regex_compiler_state
 {
     EROC_REGEX_COMPILER_STATE_INIT,
+    EROC_REGEX_COMPILER_STATE_SCAN,
 };
 
 /**
