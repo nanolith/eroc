@@ -45,6 +45,14 @@ enum eroc_regex_combinator_type
 };
 
 /**
+ * \brief States for the regular expression compiler.
+ */
+enum eroc_regex_compiler_state
+{
+    EROC_REGEX_COMPILER_STATE_INIT,
+};
+
+/**
  * \brief The regular expression AST node is used by the parser to represent a
  * regular expression operation.
  */
