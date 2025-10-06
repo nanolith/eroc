@@ -39,6 +39,7 @@ enum eroc_regex_ast_node_type
  */
 enum eroc_regex_combinator_type
 {
+    EROC_REGEX_COMBINATOR_NONE,
     EROC_REGEX_COMBINATOR_CONCAT,
     EROC_REGEX_COMBINATOR_ALTERNATE,
 };
