@@ -254,6 +254,13 @@ int eroc_regex_ast_node_capture_create(
  */
 void eroc_regex_ast_node_release(eroc_regex_ast_node* node);
 
+/**
+ * \brief Release a regular expression compiler instance.
+ *
+ * \param inst          The instance to release.
+ */
+void eroc_regex_compiler_instance_release(eroc_regex_compiler_instance* inst);
+
 /* C++ compatibility. */
 # ifdef   __cplusplus
 }
