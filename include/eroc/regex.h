@@ -102,6 +102,7 @@ struct eroc_regex_compiler_instance
 {
     eroc_regex_ast_node* head;
     eroc_regex_ast_node* ast;
+    int state;
     const char* input;
     size_t offset;
     size_t nesting_depth;
