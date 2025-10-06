@@ -35,6 +35,14 @@ enum eroc_regex_ast_node_type
 };
 
 /**
+ * \brief Types of combinators to use to combine current ast with next node.
+ */
+enum eroc_regex_combinator_type
+{
+    EROC_REGEX_COMBINATOR_CONCAT,
+};
+
+/**
  * \brief The regular expression AST node is used by the parser to represent a
  * regular expression operation.
  */
