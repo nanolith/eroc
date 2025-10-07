@@ -39,7 +39,6 @@ int eroc_regex_compiler_instance_create(
 
     /* initialize instance. */
     tmp->state = EROC_REGEX_COMPILER_STATE_INIT;
-    tmp->next_combinator = EROC_REGEX_COMBINATOR_NONE;
     tmp->input = input;
 
     /* success. */
