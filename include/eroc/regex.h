@@ -99,7 +99,6 @@ struct eroc_regex_compiler_instance
     int state;
     const char* input;
     size_t offset;
-    size_t nesting_depth;
 };
 
 /**
