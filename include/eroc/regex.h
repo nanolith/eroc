@@ -39,16 +39,6 @@ enum eroc_regex_ast_node_type
 };
 
 /**
- * \brief Types of combinators to use to combine current ast with next node.
- */
-enum eroc_regex_combinator_type
-{
-    EROC_REGEX_COMBINATOR_NONE,
-    EROC_REGEX_COMBINATOR_CONCAT,
-    EROC_REGEX_COMBINATOR_ALTERNATE,
-};
-
-/**
  * \brief States for the regular expression compiler.
  */
 enum eroc_regex_compiler_state
