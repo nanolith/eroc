@@ -62,13 +62,6 @@ int eroc_regex_compiler_parse(eroc_regex_ast_node** ast, const char* input)
         goto cleanup_inst;
     }
 
-    /* If we are not combining, then this is an error. */
-    if (EROC_REGEX_COMBINATOR_CONCAT != inst->next_combinator)
-    {
-        retval = 4;
-        goto cleanup_inst;
-    }
-
     /* If we are in the middle of a char class, then this is an error. */
     if (EROC_REGEX_COMPILER_STATE_IN_CHAR_CLASS == inst->state)
     {
