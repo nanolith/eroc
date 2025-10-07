@@ -48,6 +48,13 @@ int eroc_regex_compiler_parse(eroc_regex_ast_node** ast, const char* input)
         goto cleanup_inst;
     }
 
+    /* If the stack is empty, then this is an error. */
+    if (NULL == inst->head)
+    {
+        retval = 2;
+        goto cleanup_inst;
+    }
+
     (void)ast;
 
 cleanup_inst:
