@@ -100,7 +100,6 @@ struct eroc_regex_compiler_instance
     const char* input;
     size_t offset;
     size_t nesting_depth;
-    int next_combinator;
 };
 
 /**
