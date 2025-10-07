@@ -83,7 +83,11 @@ int eroc_regex_compiler_parse(eroc_regex_ast_node** ast, const char* input)
         goto cleanup_inst;
     }
 
-    (void)ast;
+    /* Success: assign our ast to the head of stack, and clear the stack. */
+    *ast = inst->head;
+    inst->head = NULL;
+    retval = 0;
+    goto cleanup_inst;
 
 cleanup_inst:
     eroc_regex_compiler_instance_release(inst);
