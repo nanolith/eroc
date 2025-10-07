@@ -76,6 +76,13 @@ int eroc_regex_compiler_parse(eroc_regex_ast_node** ast, const char* input)
         goto cleanup_inst;
     }
 
+    /* If the stack hasn't been completely reduced, then this is an error. */
+    if (NULL != inst->head->next)
+    {
+        retval = 6;
+        goto cleanup_inst;
+    }
+
     (void)ast;
 
 cleanup_inst:
