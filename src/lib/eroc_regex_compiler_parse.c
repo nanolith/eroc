@@ -9,6 +9,9 @@
 
 #include <eroc/regex.h>
 
+/* forward decls. */
+static int read_input(eroc_regex_compiler_instance* inst);
+
 /**
  * \brief Given an input string, create an AST for further processing.
  *
@@ -20,8 +23,46 @@
  */
 int eroc_regex_compiler_parse(eroc_regex_ast_node** ast, const char* input)
 {
-    (void)ast;
-    (void)input;
+    int retval;
+    eroc_regex_compiler_instance* inst;
 
-    return 1;
+    /* create the compiler instance. */
+    retval = eroc_regex_compiler_instance_create(&inst, input);
+    if (0 != retval)
+    {
+        goto done;
+    }
+
+    /* process the regular expression, character-by-character. */
+    for (
+        int ch = read_input(inst);
+        0 != ch;
+        ch = read_input(inst))
+    {
+    }
+
+    /* If we are still in init, then the input expression is invalid. */
+    if (EROC_REGEX_COMPILER_STATE_INIT == inst->state)
+    {
+        retval = 1;
+        goto cleanup_inst;
+    }
+
+    (void)ast;
+
+cleanup_inst:
+    eroc_regex_compiler_instance_release(inst);
+
+done:
+    return retval;
+}
+
+/**
+ * \brief Read the next character from input.
+ *
+ * \param inst          The compiler instance for this operation.
+ */
+static int read_input(eroc_regex_compiler_instance* inst)
+{
+    return inst->input[inst->offset++];
 }
