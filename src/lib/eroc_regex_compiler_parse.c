@@ -41,13 +41,6 @@ int eroc_regex_compiler_parse(eroc_regex_ast_node** ast, const char* input)
     {
     }
 
-    /* If we are still in init, then the input expression is invalid. */
-    if (EROC_REGEX_COMPILER_STATE_INIT == inst->state)
-    {
-        retval = 1;
-        goto cleanup_inst;
-    }
-
     /* If the stack is empty, then this is an error. */
     if (NULL == inst->head)
     {
