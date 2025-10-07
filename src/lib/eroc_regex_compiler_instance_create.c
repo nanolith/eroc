@@ -38,7 +38,7 @@ int eroc_regex_compiler_instance_create(
     memset(tmp, 0, sizeof(*tmp));
 
     /* initialize instance. */
-    tmp->state = EROC_REGEX_COMPILER_STATE_INIT;
+    tmp->state = EROC_REGEX_COMPILER_STATE_SCAN;
     tmp->input = input;
 
     /* success. */
