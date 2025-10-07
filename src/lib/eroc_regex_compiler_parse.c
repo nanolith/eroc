@@ -55,13 +55,6 @@ int eroc_regex_compiler_parse(eroc_regex_ast_node** ast, const char* input)
         goto cleanup_inst;
     }
 
-    /* If we are in the middle of a capture, then this is an error. */
-    if (0 != inst->nesting_depth)
-    {
-        retval = 3;
-        goto cleanup_inst;
-    }
-
     /* If we are in the middle of a char class, then this is an error. */
     if (EROC_REGEX_COMPILER_STATE_IN_CHAR_CLASS == inst->state)
     {
