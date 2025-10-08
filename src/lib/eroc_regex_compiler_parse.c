@@ -19,6 +19,8 @@ static int shift_alternate_pseudoinstruction(
     eroc_regex_compiler_instance* inst);
 static int shift_start_capture_pseudoinstruction(
     eroc_regex_compiler_instance* inst);
+static int shift_end_capture_pseudoinstruction(
+    eroc_regex_compiler_instance* inst);
 static int reduce_instructions(eroc_regex_compiler_instance* inst);
 static int reduce_concat(eroc_regex_compiler_instance* inst);
 static int reduce_alternate(eroc_regex_compiler_instance* inst);
@@ -170,6 +172,10 @@ static int shift_instruction(eroc_regex_compiler_instance* inst, int ch)
             retval = shift_start_capture_pseudoinstruction(inst);
             break;
 
+        case ')':
+            retval = shift_end_capture_pseudoinstruction(inst);
+            break;
+
         /* unsupported instruction. */
         default:
             retval = 1;
@@ -272,6 +278,47 @@ static int shift_start_capture_pseudoinstruction(
 
     /* override the type to make it a start capture pseudoinstruction. */
     ast->type = EROC_REGEX_AST_PLACEHOLDER_START_CAPTURE;
+
+    /* shift this node onto the stack. */
+    ast->next = inst->head;
+    inst->head = ast;
+
+    return 0;
+}
+
+/**
+ * \brief Shift an end capture pseudoinstruction onto the stack.
+ *
+ * \param inst              The compiler instance for this operation.
+ *
+ * \returns 0 on success and non-zero on failure.
+ */
+static int shift_end_capture_pseudoinstruction(
+    eroc_regex_compiler_instance* inst)
+{
+    eroc_regex_ast_node* ast;
+
+    /* the stack can't be empty. */
+    if (NULL == inst->head)
+    {
+        return 1;
+    }
+
+    /* the top of stack can't be a start capture. */
+    if (EROC_REGEX_AST_PLACEHOLDER_START_CAPTURE == inst->head->type)
+    {
+        return 2;
+    }
+
+    /* create an empty node. */
+    int retval = eroc_regex_ast_node_empty_create(&ast);
+    if (0 != retval)
+    {
+        return retval;
+    }
+
+    /* override the type to make it an end capture pseudoinstruction. */
+    ast->type = EROC_REGEX_AST_PLACEHOLDER_END_CAPTURE;
 
     /* shift this node onto the stack. */
     ast->next = inst->head;
