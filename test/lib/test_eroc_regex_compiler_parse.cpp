@@ -129,3 +129,14 @@ TEST(parse_left_alt_failure)
 
     TEST_ASSERT(0 != eroc_regex_compiler_parse(&ast, INPUT));
 }
+
+/**
+ * \brief Two alts is a failure.
+ */
+TEST(parse_alt_alt_failure)
+{
+    eroc_regex_ast_node* ast;
+    const char* INPUT = ".||.";
+
+    TEST_ASSERT(0 != eroc_regex_compiler_parse(&ast, INPUT));
+}
