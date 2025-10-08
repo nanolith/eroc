@@ -23,3 +23,24 @@ TEST(parse_empty_string_error)
 
     TEST_ASSERT(0 != eroc_regex_compiler_parse(&ast, INPUT));
 }
+
+/**
+ * \brief We can parse an any instruction.
+ */
+TEST(parse_single_any)
+{
+    eroc_regex_ast_node* ast;
+    const char* INPUT = ".";
+
+    TEST_ASSERT(0 == eroc_regex_compiler_parse(&ast, INPUT));
+
+    /* ast is not NULL. */
+    TEST_ASSERT(nullptr != ast);
+    /* ast does not have a next pointer. */
+    TEST_EXPECT(nullptr == ast->next);
+    /* ast's type is ANY. */
+    TEST_EXPECT(EROC_REGEX_AST_ANY == ast->type);
+
+    /* clean up. */
+    eroc_regex_ast_node_release(ast);
+}
