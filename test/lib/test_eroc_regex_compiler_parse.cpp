@@ -44,3 +44,40 @@ TEST(parse_single_any)
     /* clean up. */
     eroc_regex_ast_node_release(ast);
 }
+
+/**
+ * \brief We can parse two any instructions.
+ */
+TEST(parse_two_anys)
+{
+    eroc_regex_ast_node* ast;
+    const char* INPUT = "..";
+
+    TEST_ASSERT(0 == eroc_regex_compiler_parse(&ast, INPUT));
+
+    /* ast is not NULL. */
+    TEST_ASSERT(nullptr != ast);
+    /* ast does not have a next pointer. */
+    TEST_EXPECT(nullptr == ast->next);
+    /* ast's type is CONCAT. */
+    TEST_EXPECT(EROC_REGEX_AST_CONCAT == ast->type);
+
+    /* left is not NULL. */
+    auto left = ast->data.binary.left;
+    TEST_ASSERT(nullptr != left);
+    /* left does not have a next pointer. */
+    TEST_EXPECT(nullptr == left->next);
+    /* left's type is ANY. */
+    TEST_EXPECT(EROC_REGEX_AST_ANY == left->type);
+
+    /* right is not NULL. */
+    auto right = ast->data.binary.right;
+    TEST_ASSERT(nullptr != right);
+    /* right does not have a next pointer. */
+    TEST_EXPECT(nullptr == right->next);
+    /* right's type is ANY. */
+    TEST_EXPECT(EROC_REGEX_AST_ANY == right->type);
+
+    /* clean up. */
+    eroc_regex_ast_node_release(ast);
+}
