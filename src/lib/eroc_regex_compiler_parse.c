@@ -188,6 +188,12 @@ static int shift_alternate_pseudoinstruction(
         return 1;
     }
 
+    /* We can't shift an alternate after an alternate. */
+    if (EROC_REGEX_AST_PLACEHOLDER_ALTERNATE == inst->head->type)
+    {
+        return 2;
+    }
+
     /* create an empty node. */
     int retval = eroc_regex_ast_node_empty_create(&ast);
     if (0 != retval)
