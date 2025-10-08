@@ -345,3 +345,50 @@ TEST(parse_capture_of_concat)
     /* clean up. */
     eroc_regex_ast_node_release(outer);
 }
+
+/**
+ * \brief We can parse a capture group holding an alternate.
+ */
+TEST(parse_capture_of_alternate)
+{
+    eroc_regex_ast_node* outer;
+    const char* INPUT = "(.|.)";
+
+    TEST_ASSERT(0 == eroc_regex_compiler_parse(&outer, INPUT));
+
+    /* outer is not NULL. */
+    TEST_ASSERT(nullptr != outer);
+    /* outer does not have a next pointer. */
+    TEST_EXPECT(nullptr == outer->next);
+    /* outer's type is CAPTURE. */
+    TEST_EXPECT(EROC_REGEX_AST_CAPTURE == outer->type);
+    /* outer's group index is 0. */
+    TEST_EXPECT(0 == outer->data.capture.group_index);
+
+    /* inner is not NULL. */
+    auto inner = outer->data.capture.child;
+    TEST_ASSERT(nullptr != inner);
+    /* inner does not have a next pointer. */
+    TEST_EXPECT(nullptr == inner->next);
+    /* inner's type is ALTERNATE. */
+    TEST_EXPECT(EROC_REGEX_AST_ALTERNATE == inner->type);
+
+    /* inner_left is not NULL. */
+    auto inner_left = inner->data.binary.left;
+    TEST_ASSERT(nullptr != inner_left);
+    /* inner_left does not have a next pointer. */
+    TEST_EXPECT(nullptr == inner_left->next);
+    /* inner_left's type is ANY. */
+    TEST_EXPECT(EROC_REGEX_AST_ANY == inner_left->type);
+
+    /* inner_right is not NULL. */
+    auto inner_right = inner->data.binary.right;
+    TEST_ASSERT(nullptr != inner_right);
+    /* inner_right does not have a next pointer. */
+    TEST_EXPECT(nullptr == inner_right->next);
+    /* inner_right's type is ANY. */
+    TEST_EXPECT(EROC_REGEX_AST_ANY == inner_right->type);
+
+    /* clean up. */
+    eroc_regex_ast_node_release(outer);
+}
