@@ -162,3 +162,14 @@ TEST(parse_start_capture_no_end)
 
     TEST_ASSERT(0 != eroc_regex_compiler_parse(&ast, INPUT));
 }
+
+/**
+ * \brief An end capture at the start is a failure.
+ */
+TEST(parse_end_capture_at_beginning_failure)
+{
+    eroc_regex_ast_node* ast;
+    const char* INPUT = ")";
+
+    TEST_ASSERT(0 != eroc_regex_compiler_parse(&ast, INPUT));
+}
