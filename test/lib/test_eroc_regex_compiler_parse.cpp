@@ -225,8 +225,10 @@ TEST(parse_two_capture_groups)
     TEST_ASSERT(nullptr != right);
     /* right does not have a next pointer. */
     TEST_EXPECT(nullptr == right->next);
-    /* right's type is ANY. */
+    /* right's type is CAPTURE. */
     TEST_EXPECT(EROC_REGEX_AST_CAPTURE == right->type);
+    /* right's group index is 1. */
+    TEST_EXPECT(1 == right->data.capture.group_index);
 
     /* right's child is not NULL. */
     auto right_child = right->data.capture.child;
