@@ -11,6 +11,9 @@
 
 /* forward decls. */
 static int read_input(eroc_regex_compiler_instance* inst);
+static int shift_instruction(eroc_regex_compiler_instance* inst, int ch);
+static int shift_any_instruction(eroc_regex_compiler_instance* inst);
+static int reduce_instructions(eroc_regex_compiler_instance* inst);
 
 /**
  * \brief Given an input string, create an AST for further processing.
@@ -39,6 +42,28 @@ int eroc_regex_compiler_parse(eroc_regex_ast_node** ast, const char* input)
         0 != ch;
         ch = read_input(inst))
     {
+        switch (inst->state)
+        {
+            case EROC_REGEX_COMPILER_STATE_SCAN:
+                /* shift this instruction onto the stack. */
+                retval = shift_instruction(inst, ch);
+                if (0 != retval)
+                {
+                    goto cleanup_inst;
+                }
+                break;
+
+            default:
+                /* unsupported state for now. */
+                return 1;
+        }
+
+        /* reduce instructions on the stack as far as we can. */
+        retval = reduce_instructions(inst);
+        if (0 != retval)
+        {
+            goto cleanup_inst;
+        }
     }
 
     /* If the stack is empty, then this is an error. */
@@ -83,4 +108,118 @@ done:
 static int read_input(eroc_regex_compiler_instance* inst)
 {
     return inst->input[inst->offset++];
+}
+
+/**
+ * \brief Shift the given instruction onto the stack.
+ *
+ * \param inst          The compiler instance for this operation.
+ * \param ch            The instruction to shift.
+ *
+ * \returns 0 on success and non-zero on failure.
+ */
+static int shift_instruction(eroc_regex_compiler_instance* inst, int ch)
+{
+    int retval;
+
+    switch (ch)
+    {
+        case '.':
+            retval = shift_any_instruction(inst);
+            break;
+
+        /* unsupported instruction. */
+        default:
+            retval = 1;
+            break;
+    }
+
+    return retval;
+}
+
+/**
+ * \brief Shift an any instruction onto the stack.
+ *
+ * \param inst          The compiler instance for this operation.
+ *
+ * \returns 0 on success and non-zero on failure.
+ */
+static int shift_any_instruction(eroc_regex_compiler_instance* inst)
+{
+    eroc_regex_ast_node* ast;
+
+    /* create an any node. */
+    int retval = eroc_regex_ast_node_any_create(&ast);
+    if (0 != retval)
+    {
+        return retval;
+    }
+
+    /* shift this node onto the stack. */
+    ast->next = inst->head;
+    inst->head = ast;
+
+    return 0;
+}
+
+/**
+ * \brief Reduce instructions by combining them according to stack ordering.
+ *
+ * \param inst          The compiler instance for this operation.
+ *
+ * \returns 0 on success and non-zero on failure.
+ */
+static int reduce_instructions(eroc_regex_compiler_instance* inst)
+{
+    int retval;
+    eroc_regex_ast_node* right = inst->head;
+    eroc_regex_ast_node* left;
+
+    /* if there are no instructions on the stack, that's an error. */
+    if (NULL == right)
+    {
+        return 1;
+    }
+
+    left = right->next;
+
+    /* loop while there is still more than one instruction on the stack. */
+    while (NULL != left)
+    {
+        switch (left->type)
+        {
+            /* we can't reduce this any further until we get the end capture. */
+            case EROC_REGEX_AST_PLACEHOLDER_START_CAPTURE:
+                return 0;
+
+            /* TODO - handle alternate case. */
+            #if 0
+            case EROC_REGEX_AST_PLACEHOLDER_ALTERNATE:
+                /* attempt to reduce an alternate. */
+                retval = reduce_alternate(inst);
+                break;
+            #endif
+
+            /* TODO - in all other cases, concat the two instructions. */
+            default:
+            #if 0
+                retval = reduce_concat(inst);
+                break;
+            #endif
+                retval = 1;
+        }
+
+        /* if reduction failed, return the error code. */
+        if (0 != retval)
+        {
+            return retval;
+        }
+
+        /* set up for next run. */
+        right = inst->head;
+        left = right->next;
+    }
+
+    /* success. */
+    return 0;
 }
