@@ -140,3 +140,14 @@ TEST(parse_alt_alt_failure)
 
     TEST_ASSERT(0 != eroc_regex_compiler_parse(&ast, INPUT));
 }
+
+/**
+ * \brief A start capture with no end is a failure.
+ */
+TEST(parse_start_capture_no_end)
+{
+    eroc_regex_ast_node* ast;
+    const char* INPUT = "(";
+
+    TEST_ASSERT(0 != eroc_regex_compiler_parse(&ast, INPUT));
+}
