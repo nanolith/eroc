@@ -284,6 +284,8 @@ TEST(parse_two_capture_groups_alternate)
     TEST_EXPECT(nullptr == right->next);
     /* right's type is ANY. */
     TEST_EXPECT(EROC_REGEX_AST_CAPTURE == right->type);
+    /* right's group index is 1. */
+    TEST_EXPECT(1 == right->data.capture.group_index);
 
     /* right's child is not NULL. */
     auto right_child = right->data.capture.child;
