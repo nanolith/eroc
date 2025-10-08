@@ -14,6 +14,7 @@ static int read_input(eroc_regex_compiler_instance* inst);
 static int shift_instruction(eroc_regex_compiler_instance* inst, int ch);
 static int shift_any_instruction(eroc_regex_compiler_instance* inst);
 static int reduce_instructions(eroc_regex_compiler_instance* inst);
+static int reduce_concat(eroc_regex_compiler_instance* inst);
 
 /**
  * \brief Given an input string, create an AST for further processing.
@@ -200,13 +201,10 @@ static int reduce_instructions(eroc_regex_compiler_instance* inst)
                 break;
             #endif
 
-            /* TODO - in all other cases, concat the two instructions. */
+            /* in all other cases, concat the two instructions. */
             default:
-            #if 0
                 retval = reduce_concat(inst);
                 break;
-            #endif
-                retval = 1;
         }
 
         /* if reduction failed, return the error code. */
@@ -221,5 +219,37 @@ static int reduce_instructions(eroc_regex_compiler_instance* inst)
     }
 
     /* success. */
+    return 0;
+}
+
+/**
+ * \brief Reduce the top two instructions on the stack into a concat.
+ *
+ * \param inst              The compiler instance for this operation.
+ *
+ * \returns 0 on success and non-zero on failure.
+ */
+static int reduce_concat(eroc_regex_compiler_instance* inst)
+{
+    int retval;
+    eroc_regex_ast_node* right = inst->head;
+    eroc_regex_ast_node* left = right->next;
+    eroc_regex_ast_node* ast;
+
+    /* create a concat node to hold these values. */
+    retval = eroc_regex_ast_node_concat_create(&ast, left, right);
+    if (0 != retval)
+    {
+        return retval;
+    }
+
+    /* pop these values off of the stack. */
+    inst->head = left->next;
+    left->next = right->next = NULL;
+
+    /* push the new node on the stack. */
+    ast->next = inst->head;
+    inst->head = ast;
+
     return 0;
 }
