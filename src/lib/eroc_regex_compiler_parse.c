@@ -24,6 +24,7 @@ static int shift_end_capture_pseudoinstruction(
 static int reduce_instructions(eroc_regex_compiler_instance* inst);
 static int reduce_concat(eroc_regex_compiler_instance* inst);
 static int reduce_alternate(eroc_regex_compiler_instance* inst);
+static int reduce_capture(eroc_regex_compiler_instance* inst);
 
 /**
  * \brief Given an input string, create an AST for further processing.
@@ -360,6 +361,15 @@ static int reduce_instructions(eroc_regex_compiler_instance* inst)
             /* we can't reduce a right-hand start capture. */
             case EROC_REGEX_AST_PLACEHOLDER_START_CAPTURE:
                 return 0;
+
+            /* attempt to reduce a right-hand end capture. */
+            case EROC_REGEX_AST_PLACEHOLDER_END_CAPTURE:
+                retval = reduce_capture(inst);
+                if (0 != retval)
+                {
+                    return retval;
+                }
+                goto next;
         }
 
         switch (left->type)
@@ -385,6 +395,7 @@ static int reduce_instructions(eroc_regex_compiler_instance* inst)
             return retval;
         }
 
+    next:
         /* set up for next run. */
         right = inst->head;
         left = right->next;
@@ -464,6 +475,58 @@ static int reduce_alternate(eroc_regex_compiler_instance* inst)
 
     /* release alt. */
     eroc_regex_ast_node_release(alt);
+
+    return 0;
+}
+
+/**
+ * \brief Attempt to reduce a capture instruction.
+ *
+ * \param inst              The compiler instance for this operation.
+ *
+ * \returns 0 on success and non-zero on failure.
+ */
+static int reduce_capture(eroc_regex_compiler_instance* inst)
+{
+    int retval;
+    eroc_regex_ast_node* end = inst->head;
+    eroc_regex_ast_node* in = end->next;
+    eroc_regex_ast_node* start = in->next;
+    eroc_regex_ast_node* ast;
+
+    /* verify that start is valid. */
+    if (NULL == start)
+    {
+        return 1;
+    }
+
+    /* for this reduction to work, start and end must start and end capture, */
+    /* and in can't be a pseudoinstruction. */
+    if (   EROC_REGEX_AST_PLACEHOLDER_START_CAPTURE != start->type
+        || EROC_REGEX_AST_PLACEHOLDER_END_CAPTURE != end->type
+        || is_pseudoinstruction(in))
+    {
+        return 2;
+    }
+
+    /* create a capture node to hold the instruction. */
+    retval = eroc_regex_ast_node_capture_create(&ast, in, (inst->captures)++);
+    if (0 != retval)
+    {
+        return retval;
+    }
+
+    /* pop these values off of the stack. */
+    inst->head = start->next;
+    start->next = in->next = end->next = NULL;
+
+    /* push the new node onto the stack. */
+    ast->next = inst->head;
+    inst->head = ast;
+
+    /* release start and end. */
+    eroc_regex_ast_node_release(start);
+    eroc_regex_ast_node_release(end);
 
     return 0;
 }
