@@ -8,12 +8,16 @@
  */
 
 #include <eroc/regex.h>
+#include <stdbool.h>
 
 /* forward decls. */
+static bool is_pseudoinstruction(const eroc_regex_ast_node* ast);
 static int read_input(eroc_regex_compiler_instance* inst);
 static int shift_instruction(eroc_regex_compiler_instance* inst, int ch);
 static int shift_any_instruction(eroc_regex_compiler_instance* inst);
 static int shift_alternate_pseudoinstruction(
+    eroc_regex_compiler_instance* inst);
+static int shift_start_capture_pseudoinstruction(
     eroc_regex_compiler_instance* inst);
 static int reduce_instructions(eroc_regex_compiler_instance* inst);
 static int reduce_concat(eroc_regex_compiler_instance* inst);
@@ -91,6 +95,13 @@ int eroc_regex_compiler_parse(eroc_regex_ast_node** ast, const char* input)
         goto cleanup_inst;
     }
 
+    /* if the top of stack is a pseudoinstruction, then this is an error. */
+    if (is_pseudoinstruction(inst->head))
+    {
+        retval = 3;
+        goto cleanup_inst;
+    }
+
     /* Success: assign our ast to the head of stack, and clear the stack. */
     *ast = inst->head;
     inst->head = NULL;
@@ -102,6 +113,25 @@ cleanup_inst:
 
 done:
     return retval;
+}
+
+/**
+ * \brief Check to see if the given AST node is a pseudoinstruction.
+ *
+ * \param ast           The AST node to check.
+ */
+static bool is_pseudoinstruction(const eroc_regex_ast_node* ast)
+{
+    switch (ast->type)
+    {
+        case EROC_REGEX_AST_PLACEHOLDER_START_CAPTURE:
+        case EROC_REGEX_AST_PLACEHOLDER_END_CAPTURE:
+        case EROC_REGEX_AST_PLACEHOLDER_ALTERNATE:
+            return true;
+
+        default:
+            return false;
+    }
 }
 
 /**
@@ -134,6 +164,10 @@ static int shift_instruction(eroc_regex_compiler_instance* inst, int ch)
 
         case '|':
             retval = shift_alternate_pseudoinstruction(inst);
+            break;
+
+        case '(':
+            retval = shift_start_capture_pseudoinstruction(inst);
             break;
 
         /* unsupported instruction. */
@@ -218,6 +252,35 @@ static int shift_alternate_pseudoinstruction(
 }
 
 /**
+ * \brief Shift a start capture pseudoinstruction onto the stack.
+ *
+ * \param inst              The compiler instance for this operation.
+ *
+ * \returns 0 on success and non-zero on failure.
+ */
+static int shift_start_capture_pseudoinstruction(
+    eroc_regex_compiler_instance* inst)
+{
+    eroc_regex_ast_node* ast;
+
+    /* create an empty node. */
+    int retval = eroc_regex_ast_node_empty_create(&ast);
+    if (0 != retval)
+    {
+        return retval;
+    }
+
+    /* override the type to make it a start capture pseudoinstruction. */
+    ast->type = EROC_REGEX_AST_PLACEHOLDER_START_CAPTURE;
+
+    /* shift this node onto the stack. */
+    ast->next = inst->head;
+    inst->head = ast;
+
+    return 0;
+}
+
+/**
  * \brief Reduce instructions by combining them according to stack ordering.
  *
  * \param inst          The compiler instance for this operation.
@@ -245,6 +308,10 @@ static int reduce_instructions(eroc_regex_compiler_instance* inst)
         {
             /* we can't reduce a right-hand alternate. */
             case EROC_REGEX_AST_PLACEHOLDER_ALTERNATE:
+                return 0;
+
+            /* we can't reduce a right-hand start capture. */
+            case EROC_REGEX_AST_PLACEHOLDER_START_CAPTURE:
                 return 0;
         }
 
