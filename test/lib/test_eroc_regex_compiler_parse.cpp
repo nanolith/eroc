@@ -175,6 +175,17 @@ TEST(parse_end_capture_at_beginning_failure)
 }
 
 /**
+ * \brief An empty capture group is a failure
+ */
+TEST(parse_empty_capture_group_failure)
+{
+    eroc_regex_ast_node* ast;
+    const char* INPUT = "()";
+
+    TEST_ASSERT(0 != eroc_regex_compiler_parse(&ast, INPUT));
+}
+
+/**
  * \brief We can parse two capture groups.
  */
 TEST(parse_two_capture_groups)
@@ -227,15 +238,4 @@ TEST(parse_two_capture_groups)
 
     /* clean up. */
     eroc_regex_ast_node_release(ast);
-}
-
-/**
- * \brief An empty capture group is a failure
- */
-TEST(parse_empty_capture_group_failure)
-{
-    eroc_regex_ast_node* ast;
-    const char* INPUT = "()";
-
-    TEST_ASSERT(0 != eroc_regex_compiler_parse(&ast, INPUT));
 }
