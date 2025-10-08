@@ -239,3 +239,58 @@ TEST(parse_two_capture_groups)
     /* clean up. */
     eroc_regex_ast_node_release(ast);
 }
+
+/**
+ * \brief We can parse an alternate of two capture groups.
+ */
+TEST(parse_two_capture_groups_alternate)
+{
+    eroc_regex_ast_node* ast;
+    const char* INPUT = "(.)|(.)";
+
+    TEST_ASSERT(0 == eroc_regex_compiler_parse(&ast, INPUT));
+
+    /* ast is not NULL. */
+    TEST_ASSERT(nullptr != ast);
+    /* ast does not have a next pointer. */
+    TEST_EXPECT(nullptr == ast->next);
+    /* ast's type is CONCAT. */
+    TEST_EXPECT(EROC_REGEX_AST_ALTERNATE == ast->type);
+
+    /* left is not NULL. */
+    auto left = ast->data.binary.left;
+    TEST_ASSERT(nullptr != left);
+    /* left does not have a next pointer. */
+    TEST_EXPECT(nullptr == left->next);
+    /* left's type is CAPTURE. */
+    TEST_EXPECT(EROC_REGEX_AST_CAPTURE == left->type);
+    /* left's group index is 0. */
+    TEST_EXPECT(0 == left->data.capture.group_index);
+
+    /* left's child is not NULL. */
+    auto left_child = left->data.capture.child;
+    TEST_ASSERT(nullptr != left_child);
+    /* left_child does not have a next pointer. */
+    TEST_EXPECT(nullptr == left_child->next);
+    /* left_child's type is ANY. */
+    TEST_EXPECT(EROC_REGEX_AST_ANY == left_child->type);
+
+    /* right is not NULL. */
+    auto right = ast->data.binary.right;
+    TEST_ASSERT(nullptr != right);
+    /* right does not have a next pointer. */
+    TEST_EXPECT(nullptr == right->next);
+    /* right's type is ANY. */
+    TEST_EXPECT(EROC_REGEX_AST_CAPTURE == right->type);
+
+    /* right's child is not NULL. */
+    auto right_child = right->data.capture.child;
+    TEST_ASSERT(nullptr != right_child);
+    /* right_child does not have a next pointer. */
+    TEST_EXPECT(nullptr == right_child->next);
+    /* right_child's type is ANY. */
+    TEST_EXPECT(EROC_REGEX_AST_ANY == right_child->type);
+
+    /* clean up. */
+    eroc_regex_ast_node_release(ast);
+}
