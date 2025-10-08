@@ -13,8 +13,11 @@
 static int read_input(eroc_regex_compiler_instance* inst);
 static int shift_instruction(eroc_regex_compiler_instance* inst, int ch);
 static int shift_any_instruction(eroc_regex_compiler_instance* inst);
+static int shift_alternate_pseudoinstruction(
+    eroc_regex_compiler_instance* inst);
 static int reduce_instructions(eroc_regex_compiler_instance* inst);
 static int reduce_concat(eroc_regex_compiler_instance* inst);
+static int reduce_alternate(eroc_regex_compiler_instance* inst);
 
 /**
  * \brief Given an input string, create an AST for further processing.
@@ -129,6 +132,10 @@ static int shift_instruction(eroc_regex_compiler_instance* inst, int ch)
             retval = shift_any_instruction(inst);
             break;
 
+        case '|':
+            retval = shift_alternate_pseudoinstruction(inst);
+            break;
+
         /* unsupported instruction. */
         default:
             retval = 1;
@@ -164,6 +171,41 @@ static int shift_any_instruction(eroc_regex_compiler_instance* inst)
 }
 
 /**
+ * \brief Shift an alternate pseudoinstruction onto the stack.
+ *
+ * \param inst              The compiler instance for this operation.
+ *
+ * \returns 0 on success and non-zero on failure.
+ */
+static int shift_alternate_pseudoinstruction(
+    eroc_regex_compiler_instance* inst)
+{
+    eroc_regex_ast_node* ast;
+
+    /* The stack can't be empty to shift an alternate. */
+    if (NULL == inst->head)
+    {
+        return 1;
+    }
+
+    /* create an empty node. */
+    int retval = eroc_regex_ast_node_empty_create(&ast);
+    if (0 != retval)
+    {
+        return retval;
+    }
+
+    /* override the type to make it an alternate pseudoinstruction. */
+    ast->type = EROC_REGEX_AST_PLACEHOLDER_ALTERNATE;
+
+    /* shift this node onto the stack. */
+    ast->next = inst->head;
+    inst->head = ast;
+
+    return 0;
+}
+
+/**
  * \brief Reduce instructions by combining them according to stack ordering.
  *
  * \param inst          The compiler instance for this operation.
@@ -187,19 +229,23 @@ static int reduce_instructions(eroc_regex_compiler_instance* inst)
     /* loop while there is still more than one instruction on the stack. */
     while (NULL != left)
     {
+        switch (right->type)
+        {
+            /* we can't reduce a right-hand alternate. */
+            case EROC_REGEX_AST_PLACEHOLDER_ALTERNATE:
+                return 0;
+        }
+
         switch (left->type)
         {
             /* we can't reduce this any further until we get the end capture. */
             case EROC_REGEX_AST_PLACEHOLDER_START_CAPTURE:
                 return 0;
 
-            /* TODO - handle alternate case. */
-            #if 0
+            /* handle alternate case. */
             case EROC_REGEX_AST_PLACEHOLDER_ALTERNATE:
-                /* attempt to reduce an alternate. */
                 retval = reduce_alternate(inst);
                 break;
-            #endif
 
             /* in all other cases, concat the two instructions. */
             default:
@@ -250,6 +296,48 @@ static int reduce_concat(eroc_regex_compiler_instance* inst)
     /* push the new node on the stack. */
     ast->next = inst->head;
     inst->head = ast;
+
+    return 0;
+}
+
+/**
+ * \brief Reduce the top three instructions on the stack into an alternate.
+ *
+ * \param inst              The compiler instance for this operation.
+ *
+ * \returns 0 on success and non-zero on failure.
+ */
+static int reduce_alternate(eroc_regex_compiler_instance* inst)
+{
+    int retval;
+    eroc_regex_ast_node* right = inst->head;
+    eroc_regex_ast_node* alt = right->next;
+    eroc_regex_ast_node* left = alt->next;
+    eroc_regex_ast_node* ast;
+
+    /* verify that left is valid. */
+    if (NULL == left)
+    {
+        return 1;
+    }
+
+    /* create an alternate node to hold these values. */
+    retval = eroc_regex_ast_node_alternate_create(&ast, left, right);
+    if (0 != retval)
+    {
+        return retval;
+    }
+
+    /* pop these values off of the stack. */
+    inst->head = left->next;
+    left->next = alt->next = right->next = NULL;
+
+    /* push the new node on the stack. */
+    ast->next = inst->head;
+    inst->head = ast;
+
+    /* release alt. */
+    eroc_regex_ast_node_release(alt);
 
     return 0;
 }
