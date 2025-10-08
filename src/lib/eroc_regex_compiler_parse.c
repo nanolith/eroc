@@ -194,6 +194,12 @@ static int shift_alternate_pseudoinstruction(
         return 2;
     }
 
+    /* We can't shift an alternate immediately after a start capture. */
+    if (EROC_REGEX_AST_PLACEHOLDER_START_CAPTURE == inst->head->type)
+    {
+        return 3;
+    }
+
     /* create an empty node. */
     int retval = eroc_regex_ast_node_empty_create(&ast);
     if (0 != retval)
