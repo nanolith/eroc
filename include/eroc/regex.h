@@ -10,6 +10,7 @@
 
 #pragma once
 
+#include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
 
@@ -80,6 +81,8 @@ struct eroc_regex_ast_node
             /* 256 bytes in ASCII / 8 bits per byte = 32 bytes. */
             /* 32 bytes / 4 bytes per uint32_t = 8 uint32_t values. */
             uint32_t members[8];
+            /* Set to true if this character class should be inverted. */
+            bool inverse;
         } char_class;
     } data;
 };
