@@ -347,6 +347,15 @@ static int reduce_instructions(eroc_regex_compiler_instance* inst)
         return 1;
     }
 
+    /* instructions can only be reduced in certain states. */
+    switch (inst->state)
+    {
+        /* we can't reduce while in a char class. */
+        case EROC_REGEX_COMPILER_STATE_IN_CHAR_CLASS_MAYBE_INVERT:
+        case EROC_REGEX_COMPILER_STATE_IN_CHAR_CLASS:
+            return 0;
+    }
+
     left = right->next;
 
     /* loop while there is still more than one instruction on the stack. */
