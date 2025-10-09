@@ -392,3 +392,14 @@ TEST(parse_capture_of_alternate)
     /* clean up. */
     eroc_regex_ast_node_release(outer);
 }
+
+/**
+ * \brief A start char class without an end is an error.
+ */
+TEST(parse_start_char_class_no_end_failure)
+{
+    eroc_regex_ast_node* ast;
+    const char* INPUT = "[";
+
+    TEST_ASSERT(0 != eroc_regex_compiler_parse(&ast, INPUT));
+}
