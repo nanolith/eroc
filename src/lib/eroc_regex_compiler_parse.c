@@ -14,6 +14,8 @@
 static bool is_pseudoinstruction(const eroc_regex_ast_node* ast);
 static int read_input(eroc_regex_compiler_instance* inst);
 static int shift_instruction(eroc_regex_compiler_instance* inst, int ch);
+static int shift_char_class_instruction(
+    eroc_regex_compiler_instance* inst, int ch, bool maybe_invert);
 static int shift_any_instruction(eroc_regex_compiler_instance* inst);
 static int shift_alternate_pseudoinstruction(
     eroc_regex_compiler_instance* inst);
@@ -23,10 +25,13 @@ static int shift_end_capture_pseudoinstruction(
     eroc_regex_compiler_instance* inst);
 static int shift_begin_char_class_instruction(
     eroc_regex_compiler_instance* inst);
+static int shift_end_char_class_instruction(
+    eroc_regex_compiler_instance* inst);
 static int reduce_instructions(eroc_regex_compiler_instance* inst);
 static int reduce_concat(eroc_regex_compiler_instance* inst);
 static int reduce_alternate(eroc_regex_compiler_instance* inst);
 static int reduce_capture(eroc_regex_compiler_instance* inst);
+static bool has_char_class_members(const eroc_regex_ast_node* ast);
 
 /**
  * \brief Given an input string, create an AST for further processing.
@@ -60,15 +65,25 @@ int eroc_regex_compiler_parse(eroc_regex_ast_node** ast, const char* input)
             case EROC_REGEX_COMPILER_STATE_SCAN:
                 /* shift this instruction onto the stack. */
                 retval = shift_instruction(inst, ch);
-                if (0 != retval)
-                {
-                    goto cleanup_inst;
-                }
+                break;
+
+            case EROC_REGEX_COMPILER_STATE_IN_CHAR_CLASS_MAYBE_INVERT:
+                /* for now, immediately transition to char class. */
+                inst->state = EROC_REGEX_COMPILER_STATE_IN_CHAR_CLASS;
+            case EROC_REGEX_COMPILER_STATE_IN_CHAR_CLASS:
+                retval = shift_char_class_instruction(inst, ch, false);
                 break;
 
             default:
                 /* unsupported state for now. */
-                return 1;
+                retval =  1;
+                break;
+        }
+
+        /* if instruction decoding failed, clean up. */
+        if (0 != retval)
+        {
+            goto cleanup_inst;
         }
 
         /* reduce instructions on the stack as far as we can. */
@@ -187,6 +202,34 @@ static int shift_instruction(eroc_regex_compiler_instance* inst, int ch)
         default:
             retval = 1;
             break;
+    }
+
+    return retval;
+}
+
+/**
+ * \brief Shift a char class instruction onto the stack.
+ *
+ * \param inst          The compiler instance for this operation.
+ * \param ch            The instruction to shift.
+ * \param maybe_invert  Should we treat a carat as an invert?
+ *
+ * \returns 0 on success and non-zero on failure.
+ */
+static int shift_char_class_instruction(
+    eroc_regex_compiler_instance* inst, int ch, bool maybe_invert)
+{
+    int retval;
+    (void)maybe_invert;
+
+    switch (ch)
+    {
+        case ']':
+            retval = shift_end_char_class_instruction(inst);
+            break;
+
+        default:
+            retval = 1;
     }
 
     return retval;
@@ -360,6 +403,34 @@ static int shift_begin_char_class_instruction(
 
     /* we are now in the char class state. */
     inst->state = EROC_REGEX_COMPILER_STATE_IN_CHAR_CLASS_MAYBE_INVERT;
+
+    return 0;
+}
+
+/**
+ * \brief Resolve the char class instruction on the stack.
+ *
+ * \param inst              The compiler instance for this operation.
+ *
+ * \returns 0 on success and non-zero on failure.
+ */
+static int shift_end_char_class_instruction(
+    eroc_regex_compiler_instance* inst)
+{
+    /* verify that the instruction is on the stack. */
+    if (NULL == inst->head || EROC_REGEX_AST_CHAR_CLASS != inst->head->type)
+    {
+        return 1;
+    }
+
+    /* verify that there is AT LEAST one character in the class. */
+    if (!has_char_class_members(inst->head))
+    {
+        return 2;
+    }
+
+    /* switch back to the scan state so this instruction can be reduced. */
+    inst->state = EROC_REGEX_COMPILER_STATE_SCAN;
 
     return 0;
 }
@@ -574,4 +645,22 @@ static int reduce_capture(eroc_regex_compiler_instance* inst)
     eroc_regex_ast_node_release(end);
 
     return 0;
+}
+
+/**
+ * \brief Verify whether the given character class AST node has members.
+ *
+ * \param ast               The AST node to check.
+ *
+ * \returns true if members were found and false otherwise.
+ */
+static bool has_char_class_members(const eroc_regex_ast_node* ast)
+{
+    for (int i = 0; i < 8; ++i)
+    {
+        if (ast->data.char_class.members[i] != 0)
+            return true;
+    }
+
+    return false;
 }
