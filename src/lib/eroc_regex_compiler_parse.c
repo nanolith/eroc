@@ -27,6 +27,7 @@ static int shift_begin_char_class_instruction(
     eroc_regex_compiler_instance* inst);
 static int shift_end_char_class_instruction(
     eroc_regex_compiler_instance* inst);
+static int invert_char_class_instruction( eroc_regex_compiler_instance* inst);
 static int reduce_instructions(eroc_regex_compiler_instance* inst);
 static int reduce_concat(eroc_regex_compiler_instance* inst);
 static int reduce_alternate(eroc_regex_compiler_instance* inst);
@@ -68,8 +69,9 @@ int eroc_regex_compiler_parse(eroc_regex_ast_node** ast, const char* input)
                 break;
 
             case EROC_REGEX_COMPILER_STATE_IN_CHAR_CLASS_MAYBE_INVERT:
-                /* for now, immediately transition to char class. */
-                inst->state = EROC_REGEX_COMPILER_STATE_IN_CHAR_CLASS;
+                retval = shift_char_class_instruction(inst, ch, true);
+                break;
+
             case EROC_REGEX_COMPILER_STATE_IN_CHAR_CLASS:
                 retval = shift_char_class_instruction(inst, ch, false);
                 break;
@@ -220,13 +222,22 @@ static int shift_char_class_instruction(
     eroc_regex_compiler_instance* inst, int ch, bool maybe_invert)
 {
     int retval;
-    (void)maybe_invert;
 
     switch (ch)
     {
         case ']':
             retval = shift_end_char_class_instruction(inst);
             break;
+
+        case '^':
+            if (maybe_invert)
+            {
+                retval = invert_char_class_instruction(inst);
+            }
+            else
+            {
+                retval = 2;
+            }
 
         default:
             retval = 1;
@@ -431,6 +442,30 @@ static int shift_end_char_class_instruction(
 
     /* switch back to the scan state so this instruction can be reduced. */
     inst->state = EROC_REGEX_COMPILER_STATE_SCAN;
+
+    return 0;
+}
+
+/**
+ * \brief Invert the char class instruction on the stack.
+ *
+ * \param inst              The compiler instance for this operation.
+ *
+ * \returns 0 on success and non-zero on failure.
+ */
+static int invert_char_class_instruction( eroc_regex_compiler_instance* inst)
+{
+    /* verify that the instruction is on the stack. */
+    if (NULL == inst->head || EROC_REGEX_AST_CHAR_CLASS != inst->head->type)
+    {
+        return 1;
+    }
+
+    /* invert the instruction. */
+    inst->head->data.char_class.inverse = true;
+
+    /* fall to the regular char class state. */
+    inst->state = EROC_REGEX_COMPILER_STATE_IN_CHAR_CLASS;
 
     return 0;
 }
