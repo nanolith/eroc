@@ -403,3 +403,14 @@ TEST(parse_start_char_class_no_end_failure)
 
     TEST_ASSERT(0 != eroc_regex_compiler_parse(&ast, INPUT));
 }
+
+/**
+ * \brief A char class with no members is an error.
+ */
+TEST(parse_start_char_class_no_members_failure)
+{
+    eroc_regex_ast_node* ast;
+    const char* INPUT = "[]";
+
+    TEST_ASSERT(0 != eroc_regex_compiler_parse(&ast, INPUT));
+}
