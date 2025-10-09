@@ -145,10 +145,10 @@ TEST(create_release_alternate)
 TEST(create_release_char_class)
 {
     eroc_regex_ast_node* node = nullptr;
-    const uint32_t members[8] = {0, 1, 0, 0, 0, 0, 0, 0 };
+    const uint32_t empty_members[8] = {0, 0, 0, 0, 0, 0, 0, 0 };
 
     /* create the char class node. */
-    TEST_ASSERT(0 == eroc_regex_ast_node_char_class_create(&node, members));
+    TEST_ASSERT(0 == eroc_regex_ast_node_char_class_create(&node));
 
     /* the node is not NULL. */
     TEST_ASSERT(nullptr != node);
@@ -156,7 +156,10 @@ TEST(create_release_char_class)
     /* the node type is CHAR CLASS. */
     TEST_EXPECT(EROC_REGEX_AST_CHAR_CLASS == node->type);
     TEST_EXPECT(
-        0 == memcmp(members, node->data.char_class.members, sizeof(members)));
+        0
+            == memcmp(
+                    empty_members, node->data.char_class.members,
+                    sizeof(empty_members)));
 
     /* we can release this node. */
     eroc_regex_ast_node_release(node);

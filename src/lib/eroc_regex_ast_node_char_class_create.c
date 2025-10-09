@@ -11,16 +11,14 @@
 #include <string.h>
 
 /**
- * \brief Create a character class AST node.
+ * \brief Create an empty character class AST node.
  *
  * \param node          Pointer to the AST node pointer to set to the created
  *                      node on success.
- * \param members       A bitset of the members of this character class.
  *
  * \returns 0 on success and non-zero on failure.
  */
-int eroc_regex_ast_node_char_class_create(
-    eroc_regex_ast_node** node, const uint32_t members[8])
+int eroc_regex_ast_node_char_class_create(eroc_regex_ast_node** node)
 {
     int retval = eroc_regex_ast_node_empty_create(node);
     if (0 != retval)
@@ -29,7 +27,9 @@ int eroc_regex_ast_node_char_class_create(
     }
 
     (*node)->type = EROC_REGEX_AST_CHAR_CLASS;
-    memcpy((*node)->data.char_class.members, members, 8 * sizeof(uint32_t));
+    memset(
+        (*node)->data.char_class.members, 0,
+        sizeof((*node)->data.char_class.members));
 
     return 0;
 }

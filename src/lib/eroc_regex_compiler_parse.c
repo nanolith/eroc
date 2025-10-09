@@ -346,11 +346,9 @@ static int shift_begin_char_class_instruction(
     eroc_regex_compiler_instance* inst)
 {
     eroc_regex_ast_node* ast;
-    /* TODO - remove empty members from constructor. */
-    const uint32_t empty_members[8] = {0, 0, 0, 0, 0, 0, 0, 0};
 
     /* create a char class node. */
-    int retval = eroc_regex_ast_node_char_class_create(&ast, empty_members);
+    int retval = eroc_regex_ast_node_char_class_create(&ast);
     if (0 != retval)
     {
         return retval;

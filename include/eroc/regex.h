@@ -171,16 +171,14 @@ int eroc_regex_ast_node_alternate_create(
     eroc_regex_ast_node* right);
 
 /**
- * \brief Create a character class AST node.
+ * \brief Create an empty character class AST node.
  *
  * \param node          Pointer to the AST node pointer to set to the created
  *                      node on success.
- * \param members       A bitset of the members of this character class.
  *
  * \returns 0 on success and non-zero on failure.
  */
-int eroc_regex_ast_node_char_class_create(
-    eroc_regex_ast_node** node, const uint32_t members[8]);
+int eroc_regex_ast_node_char_class_create(eroc_regex_ast_node** node);
 
 /**
  * \brief Create a star AST node.
