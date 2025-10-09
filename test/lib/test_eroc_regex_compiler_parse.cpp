@@ -407,10 +407,21 @@ TEST(parse_start_char_class_no_end_failure)
 /**
  * \brief A char class with no members is an error.
  */
-TEST(parse_start_char_class_no_members_failure)
+TEST(parse_char_class_no_members_failure)
 {
     eroc_regex_ast_node* ast;
     const char* INPUT = "[]";
+
+    TEST_ASSERT(0 != eroc_regex_compiler_parse(&ast, INPUT));
+}
+
+/**
+ * \brief An inverse char class with no members is an error.
+ */
+TEST(parse_inverse_char_class_no_members_failure)
+{
+    eroc_regex_ast_node* ast;
+    const char* INPUT = "[^]";
 
     TEST_ASSERT(0 != eroc_regex_compiler_parse(&ast, INPUT));
 }
