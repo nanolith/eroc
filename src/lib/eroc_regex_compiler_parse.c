@@ -21,6 +21,8 @@ static int shift_start_capture_pseudoinstruction(
     eroc_regex_compiler_instance* inst);
 static int shift_end_capture_pseudoinstruction(
     eroc_regex_compiler_instance* inst);
+static int shift_begin_char_class_instruction(
+    eroc_regex_compiler_instance* inst);
 static int reduce_instructions(eroc_regex_compiler_instance* inst);
 static int reduce_concat(eroc_regex_compiler_instance* inst);
 static int reduce_alternate(eroc_regex_compiler_instance* inst);
@@ -84,8 +86,8 @@ int eroc_regex_compiler_parse(eroc_regex_ast_node** ast, const char* input)
         goto cleanup_inst;
     }
 
-    /* If we are in the middle of a char class, then this is an error. */
-    if (EROC_REGEX_COMPILER_STATE_IN_CHAR_CLASS == inst->state)
+    /* If we are NOT in the scan state, then this is an error. */
+    if (EROC_REGEX_COMPILER_STATE_SCAN != inst->state)
     {
         retval = 5;
         goto cleanup_inst;
@@ -175,6 +177,10 @@ static int shift_instruction(eroc_regex_compiler_instance* inst, int ch)
 
         case ')':
             retval = shift_end_capture_pseudoinstruction(inst);
+            break;
+
+        case '[':
+            retval = shift_begin_char_class_instruction(inst);
             break;
 
         /* unsupported instruction. */
@@ -324,6 +330,38 @@ static int shift_end_capture_pseudoinstruction(
     /* shift this node onto the stack. */
     ast->next = inst->head;
     inst->head = ast;
+
+    return 0;
+}
+
+/**
+ * \brief Shift a char class instruction onto the stack and enter a char class
+ * state.
+ *
+ * \param inst              The compiler instance for this operation.
+ *
+ * \returns 0 on success and non-zero on failure.
+ */
+static int shift_begin_char_class_instruction(
+    eroc_regex_compiler_instance* inst)
+{
+    eroc_regex_ast_node* ast;
+    /* TODO - remove empty members from constructor. */
+    const uint32_t empty_members[8] = {0, 0, 0, 0, 0, 0, 0, 0};
+
+    /* create a char class node. */
+    int retval = eroc_regex_ast_node_char_class_create(&ast, empty_members);
+    if (0 != retval)
+    {
+        return retval;
+    }
+
+    /* shift this node onto the stack. */
+    ast->next = inst->head;
+    inst->head = ast;
+
+    /* we are now in the char class state. */
+    inst->state = EROC_REGEX_COMPILER_STATE_IN_CHAR_CLASS_MAYBE_INVERT;
 
     return 0;
 }
