@@ -568,11 +568,14 @@ static int add_range_char_class_instruction(eroc_regex_compiler_instance* inst)
     }
 
     /* is this a literal pseudoinstruction? */
-    if (
-        EROC_REGEX_AST_PLACEHOLDER_LITERAL == inst->head->type
-     || EROC_REGEX_AST_PLACEHOLDER_START_RANGE == inst->head->type)
+    if (EROC_REGEX_AST_PLACEHOLDER_LITERAL == inst->head->type)
     {
         return reduce_char_class_range(inst);
+    }
+    /* is this a range pseudoinstruction? */
+    else if (EROC_REGEX_AST_PLACEHOLDER_START_RANGE == inst->head->type)
+    {
+        return reduce_char_class_literal(inst, '-', true);
     }
 
     /* otherwise, fall back to adding a member char class instruction. */
