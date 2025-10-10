@@ -450,3 +450,32 @@ TEST(parse_inverse_caret_char_class)
     /* clean up. */
     eroc_regex_ast_node_release(ast);
 }
+
+/**
+ * \brief We can parse an a character class with multiple characters.
+ */
+TEST(parse_inverse_char_class_multi)
+{
+    eroc_regex_ast_node* ast;
+    const char* INPUT = "[abc]";
+
+    TEST_ASSERT(0 == eroc_regex_compiler_parse(&ast, INPUT));
+
+    /* ast is not NULL. */
+    TEST_ASSERT(nullptr != ast);
+    /* ast does not have a next pointer. */
+    TEST_EXPECT(nullptr == ast->next);
+    /* ast's type is CHAR_CLASS. */
+    TEST_EXPECT(EROC_REGEX_AST_CHAR_CLASS == ast->type);
+    /* this is NOT an inverse char class. */
+    TEST_EXPECT(!ast->data.char_class.inverse);
+    /* 'a' is a member of this character class. */
+    TEST_EXPECT(eroc_regex_ast_char_class_member_check(ast, 'a'));
+    /* 'b' is a member of this character class. */
+    TEST_EXPECT(eroc_regex_ast_char_class_member_check(ast, 'b'));
+    /* 'c' is a member of this character class. */
+    TEST_EXPECT(eroc_regex_ast_char_class_member_check(ast, 'c'));
+
+    /* clean up. */
+    eroc_regex_ast_node_release(ast);
+}
