@@ -562,3 +562,32 @@ TEST(parse_reversed_range_error)
 
     TEST_ASSERT(0 != eroc_regex_compiler_parse(&ast, INPUT));
 }
+
+/**
+ * \brief We can parse the +,- ranged character class.
+ */
+TEST(parse_char_class_range_plus_comma_minus)
+{
+    eroc_regex_ast_node* ast;
+    const char* INPUT = "[+--]";
+
+    TEST_ASSERT(0 == eroc_regex_compiler_parse(&ast, INPUT));
+
+    /* ast is not NULL. */
+    TEST_ASSERT(nullptr != ast);
+    /* ast does not have a next pointer. */
+    TEST_EXPECT(nullptr == ast->next);
+    /* ast's type is CHAR_CLASS. */
+    TEST_EXPECT(EROC_REGEX_AST_CHAR_CLASS == ast->type);
+    /* this is NOT an inverse char class. */
+    TEST_EXPECT(!ast->data.char_class.inverse);
+    /* '+' is a member of this character class. */
+    TEST_EXPECT(eroc_regex_ast_char_class_member_check(ast, '+'));
+    /* ',' is a member of this character class. */
+    TEST_EXPECT(eroc_regex_ast_char_class_member_check(ast, ','));
+    /* '-' is a member of this character class. */
+    TEST_EXPECT(eroc_regex_ast_char_class_member_check(ast, '-'));
+
+    /* clean up. */
+    eroc_regex_ast_node_release(ast);
+}
