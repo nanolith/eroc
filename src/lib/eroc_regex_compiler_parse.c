@@ -153,6 +153,7 @@ static bool is_pseudoinstruction(const eroc_regex_ast_node* ast)
         case EROC_REGEX_AST_PLACEHOLDER_END_CAPTURE:
         case EROC_REGEX_AST_PLACEHOLDER_ALTERNATE:
         case EROC_REGEX_AST_PLACEHOLDER_LITERAL:
+        case EROC_REGEX_AST_PLACEHOLDER_START_RANGE:
             return true;
 
         default:
