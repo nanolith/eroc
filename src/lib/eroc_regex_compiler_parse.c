@@ -34,6 +34,7 @@ static int reduce_instructions(eroc_regex_compiler_instance* inst);
 static int reduce_concat(eroc_regex_compiler_instance* inst);
 static int reduce_alternate(eroc_regex_compiler_instance* inst);
 static int reduce_capture(eroc_regex_compiler_instance* inst);
+static int reduce_char_class_literal(eroc_regex_compiler_instance* inst);
 static bool has_char_class_members(const eroc_regex_ast_node* ast);
 
 /**
@@ -432,8 +433,26 @@ static int shift_begin_char_class_instruction(
 static int shift_end_char_class_instruction(
     eroc_regex_compiler_instance* inst)
 {
-    /* verify that the instruction is on the stack. */
-    if (NULL == inst->head || EROC_REGEX_AST_CHAR_CLASS != inst->head->type)
+    int retval;
+
+    /* verify that there is an instruction at the top of stack. */
+    if (NULL == inst->head)
+    {
+        return 1;
+    }
+
+    /* is this a literal pseudoinstruction? */
+    if (EROC_REGEX_AST_PLACEHOLDER_LITERAL == inst->head->type)
+    {
+        retval = reduce_char_class_literal(inst);
+        if (0 != retval)
+        {
+            return retval;
+        }
+    }
+
+    /* verify that the instruction at the top of stack is a char class. */
+    if (EROC_REGEX_AST_CHAR_CLASS != inst->head->type)
     {
         return 1;
     }
@@ -484,14 +503,90 @@ static int invert_char_class_instruction( eroc_regex_compiler_instance* inst)
 static int add_member_char_class_instruction(
     eroc_regex_compiler_instance* inst, int ch)
 {
-    /* verify that the instruction is on the stack. */
-    if (NULL == inst->head || EROC_REGEX_AST_CHAR_CLASS != inst->head->type)
+    int retval;
+    eroc_regex_ast_node* literal;
+
+    /* verify that there is an instruction at top of stack. */
+    if (NULL == inst->head)
     {
         return 1;
     }
 
-    /* add this character to the instruction. */
-    return eroc_regex_ast_char_class_member_add(inst->head, ch);
+    /* is this a literal pseudoinstruction? */
+    if (EROC_REGEX_AST_PLACEHOLDER_LITERAL == inst->head->type)
+    {
+        retval = reduce_char_class_literal(inst);
+        if (0 != retval)
+        {
+            return retval;
+        }
+    }
+    /* otherwise, it must be the char class at top of stack. */
+    else if (EROC_REGEX_AST_CHAR_CLASS != inst->head->type)
+    {
+        return 2;
+    }
+
+    /* create a character literal to place on the stack. */
+    retval = eroc_regex_ast_node_literal_create(&literal, ch);
+    if (0 != retval)
+    {
+        return retval;
+    }
+
+    /* make this a pseudoliteral. */
+    literal->type = EROC_REGEX_AST_PLACEHOLDER_LITERAL;
+
+    /* push this value onto the stack. */
+    literal->next = inst->head;
+    inst->head = literal;
+
+    return 0;
+}
+
+/**
+ * \brief Reduce a char class literal and a char class.
+ *
+ * \param inst          The compiler instance for this operation.
+ *
+ * \returns 0 on success and non-zero on failure.
+ */
+static int reduce_char_class_literal(eroc_regex_compiler_instance* inst)
+{
+    int retval;
+    eroc_regex_ast_node* literal = inst->head;
+    eroc_regex_ast_node* char_class;
+
+    /* if there are no instructions on the stack, that's an error. */
+    if (NULL == literal)
+    {
+        return 1;
+    }
+
+    /* verify the char class comes after this literal. */
+    char_class = literal->next;
+    if (NULL == char_class || EROC_REGEX_AST_CHAR_CLASS != char_class->type)
+    {
+        return 2;
+    }
+
+    /* retrieve the literal value. */
+    int value = literal->data.literal;
+
+    /* add this value to the char class. */
+    retval = eroc_regex_ast_char_class_member_add(char_class, value);
+    if (0 != retval)
+    {
+        return 3;
+    }
+
+    /* pop this pseudoliteral off of the stack. */
+    inst->head = char_class;
+
+    /* clean up. */
+    eroc_regex_ast_node_release(literal);
+
+    return 0;
 }
 
 /**
