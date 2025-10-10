@@ -508,3 +508,46 @@ TEST(parse_inverse_char_class_multi)
     /* clean up. */
     eroc_regex_ast_node_release(ast);
 }
+
+/**
+ * \brief We can parse a ranged character class.
+ */
+TEST(parse_char_class_range)
+{
+    eroc_regex_ast_node* ast;
+    const char* INPUT = "[0-9]";
+
+    TEST_ASSERT(0 == eroc_regex_compiler_parse(&ast, INPUT));
+
+    /* ast is not NULL. */
+    TEST_ASSERT(nullptr != ast);
+    /* ast does not have a next pointer. */
+    TEST_EXPECT(nullptr == ast->next);
+    /* ast's type is CHAR_CLASS. */
+    TEST_EXPECT(EROC_REGEX_AST_CHAR_CLASS == ast->type);
+    /* this is NOT an inverse char class. */
+    TEST_EXPECT(!ast->data.char_class.inverse);
+    /* '0' is a member of this character class. */
+    TEST_EXPECT(eroc_regex_ast_char_class_member_check(ast, '0'));
+    /* '1' is a member of this character class. */
+    TEST_EXPECT(eroc_regex_ast_char_class_member_check(ast, '1'));
+    /* '2' is a member of this character class. */
+    TEST_EXPECT(eroc_regex_ast_char_class_member_check(ast, '2'));
+    /* '3' is a member of this character class. */
+    TEST_EXPECT(eroc_regex_ast_char_class_member_check(ast, '3'));
+    /* '4' is a member of this character class. */
+    TEST_EXPECT(eroc_regex_ast_char_class_member_check(ast, '4'));
+    /* '5' is a member of this character class. */
+    TEST_EXPECT(eroc_regex_ast_char_class_member_check(ast, '5'));
+    /* '6' is a member of this character class. */
+    TEST_EXPECT(eroc_regex_ast_char_class_member_check(ast, '6'));
+    /* '7' is a member of this character class. */
+    TEST_EXPECT(eroc_regex_ast_char_class_member_check(ast, '7'));
+    /* '8' is a member of this character class. */
+    TEST_EXPECT(eroc_regex_ast_char_class_member_check(ast, '8'));
+    /* '9' is a member of this character class. */
+    TEST_EXPECT(eroc_regex_ast_char_class_member_check(ast, '9'));
+
+    /* clean up. */
+    eroc_regex_ast_node_release(ast);
+}
