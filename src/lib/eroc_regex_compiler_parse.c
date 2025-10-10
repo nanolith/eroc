@@ -77,6 +77,12 @@ int eroc_regex_compiler_parse(eroc_regex_ast_node** ast, const char* input)
                 retval = shift_instruction(inst, ch);
                 break;
 
+            case EROC_REGEX_COMPILER_STATE_SCAN_IN_ESCAPE:
+                /* this instruction is escaped, so escape its literal to the
+                 * stack. */
+                retval = shift_literal_instruction(inst, ch);
+                break;
+
             case EROC_REGEX_COMPILER_STATE_IN_CHAR_CLASS_MAYBE_INVERT:
                 retval = shift_char_class_instruction(inst, ch, true);
                 break;
@@ -211,6 +217,11 @@ static int shift_instruction(eroc_regex_compiler_instance* inst, int ch)
             retval = shift_begin_char_class_instruction(inst);
             break;
 
+        case '\\':
+            inst->state = EROC_REGEX_COMPILER_STATE_SCAN_IN_ESCAPE;
+            retval = 0;
+            break;
+
         /* character literal. */
         default:
             retval = shift_literal_instruction(inst, ch);
@@ -309,6 +320,9 @@ static int shift_literal_instruction(
     /* shift this node onto the stack. */
     ast->next = inst->head;
     inst->head = ast;
+
+    /* shifting a literal instruction always forces us back to SCAN state. */
+    inst->state = EROC_REGEX_COMPILER_STATE_SCAN;
 
     return 0;
 }
@@ -728,19 +742,20 @@ static int reduce_instructions(eroc_regex_compiler_instance* inst)
     eroc_regex_ast_node* right = inst->head;
     eroc_regex_ast_node* left;
 
-    /* if there are no instructions on the stack, that's an error. */
-    if (NULL == right)
-    {
-        return 1;
-    }
-
     /* instructions can only be reduced in certain states. */
     switch (inst->state)
     {
         /* we can't reduce while in a char class. */
         case EROC_REGEX_COMPILER_STATE_IN_CHAR_CLASS_MAYBE_INVERT:
         case EROC_REGEX_COMPILER_STATE_IN_CHAR_CLASS:
+        case EROC_REGEX_COMPILER_STATE_SCAN_IN_ESCAPE:
             return 0;
+    }
+
+    /* if there are no instructions on the stack, that's an error. */
+    if (NULL == right)
+    {
+        return 1;
     }
 
     left = right->next;
