@@ -279,6 +279,17 @@ void eroc_regex_compiler_instance_release(eroc_regex_compiler_instance* inst);
  */
 int eroc_regex_compiler_parse(eroc_regex_ast_node** ast, const char* input);
 
+/**
+ * \brief Given a char class AST node and a character, add this character to the
+ * character class.
+ *
+ * \param ast           The character class AST node for this operation.
+ * \param ch            The character to add to this class.
+ *
+ * \returns 0 on success and non-zero on failure.
+ */
+int eroc_regex_ast_char_class_member_add(eroc_regex_ast_node* ast, char ch);
+
 /* C++ compatibility. */
 # ifdef   __cplusplus
 }
