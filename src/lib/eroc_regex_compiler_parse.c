@@ -245,7 +245,7 @@ static int shift_char_class_instruction(
             break;
 
         default:
-            retval = 1;
+            retval = add_member_char_class_instruction(inst, ch);
     }
 
     return retval;
