@@ -17,6 +17,8 @@ static int shift_instruction(eroc_regex_compiler_instance* inst, int ch);
 static int shift_char_class_instruction(
     eroc_regex_compiler_instance* inst, int ch, bool maybe_invert);
 static int shift_any_instruction(eroc_regex_compiler_instance* inst);
+static int shift_literal_instruction(
+    eroc_regex_compiler_instance* inst, int ch);
 static int shift_alternate_pseudoinstruction(
     eroc_regex_compiler_instance* inst);
 static int shift_start_capture_pseudoinstruction(
@@ -209,9 +211,9 @@ static int shift_instruction(eroc_regex_compiler_instance* inst, int ch)
             retval = shift_begin_char_class_instruction(inst);
             break;
 
-        /* unsupported instruction. */
+        /* character literal. */
         default:
-            retval = 1;
+            retval = shift_literal_instruction(inst, ch);
             break;
     }
 
@@ -273,6 +275,32 @@ static int shift_any_instruction(eroc_regex_compiler_instance* inst)
 
     /* create an any node. */
     int retval = eroc_regex_ast_node_any_create(&ast);
+    if (0 != retval)
+    {
+        return retval;
+    }
+
+    /* shift this node onto the stack. */
+    ast->next = inst->head;
+    inst->head = ast;
+
+    return 0;
+}
+
+/**
+ * \brief Shift a character literal instruction onto the stack.
+ *
+ * \param inst          The compiler instance for this operation.
+ *
+ * \returns 0 on success and non-zero on failure.
+ */
+static int shift_literal_instruction(
+    eroc_regex_compiler_instance* inst, int ch)
+{
+    eroc_regex_ast_node* ast;
+
+    /* create a character literal node. */
+    int retval = eroc_regex_ast_node_literal_create(&ast, ch);
     if (0 != retval)
     {
         return retval;
