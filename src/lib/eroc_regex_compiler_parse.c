@@ -523,7 +523,9 @@ static int add_member_char_class_instruction(
     }
 
     /* is this a literal pseudoinstruction? */
-    if (EROC_REGEX_AST_PLACEHOLDER_LITERAL == inst->head->type)
+    if (
+        EROC_REGEX_AST_PLACEHOLDER_LITERAL == inst->head->type
+     || EROC_REGEX_AST_PLACEHOLDER_START_RANGE == inst->head->type)
     {
         return reduce_char_class_literal(inst, ch, true);
     }
@@ -566,7 +568,9 @@ static int add_range_char_class_instruction(eroc_regex_compiler_instance* inst)
     }
 
     /* is this a literal pseudoinstruction? */
-    if (EROC_REGEX_AST_PLACEHOLDER_LITERAL == inst->head->type)
+    if (
+        EROC_REGEX_AST_PLACEHOLDER_LITERAL == inst->head->type
+     || EROC_REGEX_AST_PLACEHOLDER_START_RANGE == inst->head->type)
     {
         return reduce_char_class_range(inst);
     }
@@ -619,16 +623,36 @@ static int reduce_char_class_literal(
     /* do we have a next character? */
     if (has_next_character)
     {
-        literal->data.literal = next_character;
-    }
-    else
-    {
-        /* pop this pseudoliteral off of the stack. */
-        inst->head = char_class;
+        /* if this is a simple literal, then just shift in the new character. */
+        if (EROC_REGEX_AST_PLACEHOLDER_LITERAL == literal->type)
+        {
+            literal->data.literal = next_character;
+            return 0;
+        }
 
-        /* clean up. */
-        eroc_regex_ast_node_release(literal);
+        /* otherwise, verify that this is a valid range. */
+        if (next_character < value)
+        {
+            return 4;
+        }
+
+        for(++value; value <= next_character; ++value)
+        {
+            retval = eroc_regex_ast_char_class_member_add(char_class, value);
+            if (0 != retval)
+            {
+                return 3;
+            }
+        }
+
+        /* fall-through to cleanup; this range is exhausted. */
     }
+
+    /* pop this pseudoliteral off of the stack. */
+    inst->head = char_class;
+
+    /* clean up. */
+    eroc_regex_ast_node_release(literal);
 
     return 0;
 }
