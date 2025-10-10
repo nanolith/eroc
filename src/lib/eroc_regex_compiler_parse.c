@@ -19,6 +19,8 @@ static int shift_char_class_instruction(
 static int shift_any_instruction(eroc_regex_compiler_instance* inst);
 static int shift_escaped_instruction(
     eroc_regex_compiler_instance* inst, int ch);
+static int shift_shorthand_char_class(
+    eroc_regex_compiler_instance* inst, int ch);
 static int shift_literal_instruction(
     eroc_regex_compiler_instance* inst, int ch);
 static int shift_alternate_pseudoinstruction(
@@ -339,10 +341,64 @@ static int shift_escaped_instruction(
 {
     switch (ch)
     {
+        case 'd':
+            return shift_shorthand_char_class(inst, ch);
+
         /* by default, escape this as a literal. */
         default:
             return shift_literal_instruction(inst, ch);
     }
+}
+
+/**
+ * \brief Shift a shorthand char class instruction onto the stack.
+ *
+ * \param inst          The compiler instance for this instruction.
+ * \param ch            The short-hand character.
+ *
+ * \returns 0 on success and non-zero on failure.
+ */
+static int shift_shorthand_char_class(
+    eroc_regex_compiler_instance* inst, int ch)
+{
+    eroc_regex_ast_node* ast;
+
+    /* create a char class node. */
+    int retval = eroc_regex_ast_node_char_class_create(&ast);
+    if (0 != retval)
+    {
+        goto done;
+    }
+
+    /* set the shorthand digits. */
+    switch (ch)
+    {
+        case 'd':
+            for (int i = '0'; i <= '9'; ++i)
+            {
+                (void)eroc_regex_ast_char_class_member_add(ast, i);
+            }
+            break;
+
+        default:
+            retval = 1;
+            goto cleanup_ast;
+    }
+
+    /* shift this node onto the stack. */
+    ast->next = inst->head;
+    inst->head = ast;
+
+    /* we are now in the SCAN state. */
+    inst->state = EROC_REGEX_COMPILER_STATE_SCAN;
+    retval = 0;
+    goto done;
+
+cleanup_ast:
+    eroc_regex_ast_node_release(ast);
+
+done:
+    return retval;
 }
 
 /**
