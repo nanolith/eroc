@@ -551,3 +551,14 @@ TEST(parse_char_class_range)
     /* clean up. */
     eroc_regex_ast_node_release(ast);
 }
+
+/**
+ * \brief A reversed range is an error.
+ */
+TEST(parse_reversed_range_error)
+{
+    eroc_regex_ast_node* ast;
+    const char* INPUT = "[9-0]";
+
+    TEST_ASSERT(0 != eroc_regex_compiler_parse(&ast, INPUT));
+}
