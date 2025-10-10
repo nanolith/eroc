@@ -342,6 +342,7 @@ static int shift_escaped_instruction(
     switch (ch)
     {
         case 'D':
+        case 'a':
         case 'd':
             return shift_shorthand_char_class(inst, ch);
 
@@ -380,6 +381,17 @@ static int shift_shorthand_char_class(
 
         case 'd':
             for (int i = '0'; i <= '9'; ++i)
+            {
+                (void)eroc_regex_ast_char_class_member_add(ast, i);
+            }
+            break;
+
+        case 'a':
+            for (int i = 'A'; i <= 'Z'; ++i)
+            {
+                (void)eroc_regex_ast_char_class_member_add(ast, i);
+            }
+            for (int i = 'a'; i <= 'z'; ++i)
             {
                 (void)eroc_regex_ast_char_class_member_add(ast, i);
             }
