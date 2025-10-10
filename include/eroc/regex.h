@@ -290,6 +290,20 @@ int eroc_regex_compiler_parse(eroc_regex_ast_node** ast, const char* input);
  */
 int eroc_regex_ast_char_class_member_add(eroc_regex_ast_node* ast, char ch);
 
+/**
+ * \brief Given a char class AST node and a character, check to see if this
+ * character is part of this character class.
+ *
+ * \note this method does not consider inverse.
+ *
+ * \param ast           The character class AST node for this operation.
+ * \param ch            The character to check.
+ *
+ * \returns true if this character is part of this class and false otherwise.
+ */
+bool eroc_regex_ast_char_class_member_check(
+    const eroc_regex_ast_node* ast, char ch);
+
 /* C++ compatibility. */
 # ifdef   __cplusplus
 }
