@@ -29,12 +29,16 @@ static int shift_end_char_class_instruction(
     eroc_regex_compiler_instance* inst);
 static int add_member_char_class_instruction(
     eroc_regex_compiler_instance* inst, int ch);
+static int add_range_char_class_instruction(eroc_regex_compiler_instance* inst);
 static int invert_char_class_instruction(eroc_regex_compiler_instance* inst);
 static int reduce_instructions(eroc_regex_compiler_instance* inst);
 static int reduce_concat(eroc_regex_compiler_instance* inst);
 static int reduce_alternate(eroc_regex_compiler_instance* inst);
 static int reduce_capture(eroc_regex_compiler_instance* inst);
-static int reduce_char_class_literal(eroc_regex_compiler_instance* inst);
+static int reduce_char_class_literal(
+    eroc_regex_compiler_instance* inst, int next_character,
+    bool has_next_character);
+static int reduce_char_class_range(eroc_regex_compiler_instance* inst);
 static bool has_char_class_members(const eroc_regex_ast_node* ast);
 
 /**
@@ -245,6 +249,10 @@ static int shift_char_class_instruction(
             }
             break;
 
+        case '-':
+            retval = add_range_char_class_instruction(inst);
+            break;
+
         default:
             retval = add_member_char_class_instruction(inst, ch);
     }
@@ -445,7 +453,7 @@ static int shift_end_char_class_instruction(
     /* is this a literal pseudoinstruction? */
     if (EROC_REGEX_AST_PLACEHOLDER_LITERAL == inst->head->type)
     {
-        retval = reduce_char_class_literal(inst);
+        retval = reduce_char_class_literal(inst, -1, false);
         if (0 != retval)
         {
             return retval;
@@ -498,6 +506,7 @@ static int invert_char_class_instruction( eroc_regex_compiler_instance* inst)
  * \brief Add a character to the char class instruction on the stack.
  *
  * \param inst              The compiler instance for this operation.
+ * \param ch                The character to add to this char class.
  *
  * \returns 0 on success and non-zero on failure.
  */
@@ -516,11 +525,7 @@ static int add_member_char_class_instruction(
     /* is this a literal pseudoinstruction? */
     if (EROC_REGEX_AST_PLACEHOLDER_LITERAL == inst->head->type)
     {
-        retval = reduce_char_class_literal(inst);
-        if (0 != retval)
-        {
-            return retval;
-        }
+        return reduce_char_class_literal(inst, ch, true);
     }
     /* otherwise, it must be the char class at top of stack. */
     else if (EROC_REGEX_AST_CHAR_CLASS != inst->head->type)
@@ -546,13 +551,43 @@ static int add_member_char_class_instruction(
 }
 
 /**
- * \brief Reduce a char class literal and a char class.
+ * \brief Possibly add a ranged char class instruction.
  *
- * \param inst          The compiler instance for this operation.
+ * \param inst              The compiler instance for this operation.
  *
  * \returns 0 on success and non-zero on failure.
  */
-static int reduce_char_class_literal(eroc_regex_compiler_instance* inst)
+static int add_range_char_class_instruction(eroc_regex_compiler_instance* inst)
+{
+    /* verify that there is an instruction at top of stack. */
+    if (NULL == inst->head)
+    {
+        return 1;
+    }
+
+    /* is this a literal pseudoinstruction? */
+    if (EROC_REGEX_AST_PLACEHOLDER_LITERAL == inst->head->type)
+    {
+        return reduce_char_class_range(inst);
+    }
+
+    /* otherwise, fall back to adding a member char class instruction. */
+    return add_member_char_class_instruction(inst, '-');
+}
+
+/**
+ * \brief Reduce a char class literal and a char class.
+ *
+ * \param inst                  The compiler instance for this operation.
+ * \param next_character        Optional next character to use for reduction.
+ * \param has_next_character    Flag to indicate whether we have a next
+ *                              character.
+ *
+ * \returns 0 on success and non-zero on failure.
+ */
+static int reduce_char_class_literal(
+    eroc_regex_compiler_instance* inst, int next_character,
+    bool has_next_character)
 {
     int retval;
     eroc_regex_ast_node* literal = inst->head;
@@ -581,11 +616,46 @@ static int reduce_char_class_literal(eroc_regex_compiler_instance* inst)
         return 3;
     }
 
-    /* pop this pseudoliteral off of the stack. */
-    inst->head = char_class;
+    /* do we have a next character? */
+    if (has_next_character)
+    {
+        literal->data.literal = next_character;
+    }
+    else
+    {
+        /* pop this pseudoliteral off of the stack. */
+        inst->head = char_class;
 
-    /* clean up. */
-    eroc_regex_ast_node_release(literal);
+        /* clean up. */
+        eroc_regex_ast_node_release(literal);
+    }
+
+    return 0;
+}
+
+/**
+ * \brief Reduce a char class literal to a range pseudoinstruction.
+ *
+ * \param inst          The compiler instance for this operation.
+ *
+ * \returns 0 on success and non-zero on failure.
+ */
+static int reduce_char_class_range(eroc_regex_compiler_instance* inst)
+{
+    /* if there are no instructions on the stack, that's an error. */
+    if (NULL == inst->head)
+    {
+        return 1;
+    }
+
+    /* verify that this is a literal pseudoinstruction. */
+    if (EROC_REGEX_AST_PLACEHOLDER_LITERAL != inst->head->type)
+    {
+        return 2;
+    }
+
+    /* upgrade this instruction to a range pseudoinstruction. */
+    inst->head->type = EROC_REGEX_AST_PLACEHOLDER_START_RANGE;
 
     return 0;
 }
