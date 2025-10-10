@@ -341,6 +341,7 @@ static int shift_escaped_instruction(
 {
     switch (ch)
     {
+        case 'D':
         case 'd':
             return shift_shorthand_char_class(inst, ch);
 
@@ -373,6 +374,10 @@ static int shift_shorthand_char_class(
     /* set the shorthand digits. */
     switch (ch)
     {
+        case 'D':
+            ast->data.char_class.inverse = true;
+            /* fall-through. */
+
         case 'd':
             for (int i = '0'; i <= '9'; ++i)
             {
