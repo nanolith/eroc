@@ -17,6 +17,8 @@ static int shift_instruction(eroc_regex_compiler_instance* inst, int ch);
 static int shift_char_class_instruction(
     eroc_regex_compiler_instance* inst, int ch, bool maybe_invert);
 static int shift_any_instruction(eroc_regex_compiler_instance* inst);
+static int shift_escaped_instruction(
+    eroc_regex_compiler_instance* inst, int ch);
 static int shift_literal_instruction(
     eroc_regex_compiler_instance* inst, int ch);
 static int shift_alternate_pseudoinstruction(
@@ -78,9 +80,7 @@ int eroc_regex_compiler_parse(eroc_regex_ast_node** ast, const char* input)
                 break;
 
             case EROC_REGEX_COMPILER_STATE_SCAN_IN_ESCAPE:
-                /* this instruction is escaped, so escape its literal to the
-                 * stack. */
-                retval = shift_literal_instruction(inst, ch);
+                retval = shift_escaped_instruction(inst, ch);
                 break;
 
             case EROC_REGEX_COMPILER_STATE_IN_CHAR_CLASS_MAYBE_INVERT:
@@ -325,6 +325,24 @@ static int shift_literal_instruction(
     inst->state = EROC_REGEX_COMPILER_STATE_SCAN;
 
     return 0;
+}
+
+/**
+ * \brief Shift an escaped instruction onto the stack.
+ *
+ * \param inst          The compiler instance for this operation.
+ *
+ * \returns 0 on success and non-zero on failure.
+ */
+static int shift_escaped_instruction(
+    eroc_regex_compiler_instance* inst, int ch)
+{
+    switch (ch)
+    {
+        /* by default, escape this as a literal. */
+        default:
+            return shift_literal_instruction(inst, ch);
+    }
 }
 
 /**
