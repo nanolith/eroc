@@ -591,3 +591,26 @@ TEST(parse_char_class_range_plus_comma_minus)
     /* clean up. */
     eroc_regex_ast_node_release(ast);
 }
+
+/**
+ * \brief We can parse a character literal instruction.
+ */
+TEST(parse_single_literal)
+{
+    eroc_regex_ast_node* ast;
+    const char* INPUT = "x";
+
+    TEST_ASSERT(0 == eroc_regex_compiler_parse(&ast, INPUT));
+
+    /* ast is not NULL. */
+    TEST_ASSERT(nullptr != ast);
+    /* ast does not have a next pointer. */
+    TEST_EXPECT(nullptr == ast->next);
+    /* ast's type is ANY. */
+    TEST_ASSERT(EROC_REGEX_AST_LITERAL == ast->type);
+    /* the literal is 'x'. */
+    TEST_EXPECT('x' == ast->data.literal);
+
+    /* clean up. */
+    eroc_regex_ast_node_release(ast);
+}
