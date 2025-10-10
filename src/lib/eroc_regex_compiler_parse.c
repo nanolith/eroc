@@ -341,6 +341,7 @@ static int shift_escaped_instruction(
 {
     switch (ch)
     {
+        case 'A':
         case 'D':
         case 'a':
         case 'd':
@@ -385,6 +386,10 @@ static int shift_shorthand_char_class(
                 (void)eroc_regex_ast_char_class_member_add(ast, i);
             }
             break;
+
+        case 'A':
+            ast->data.char_class.inverse = true;
+            /* fall-through. */
 
         case 'a':
             for (int i = 'A'; i <= 'Z'; ++i)
