@@ -27,7 +27,9 @@ static int shift_begin_char_class_instruction(
     eroc_regex_compiler_instance* inst);
 static int shift_end_char_class_instruction(
     eroc_regex_compiler_instance* inst);
-static int invert_char_class_instruction( eroc_regex_compiler_instance* inst);
+static int add_member_char_class_instruction(
+    eroc_regex_compiler_instance* inst, int ch);
+static int invert_char_class_instruction(eroc_regex_compiler_instance* inst);
 static int reduce_instructions(eroc_regex_compiler_instance* inst);
 static int reduce_concat(eroc_regex_compiler_instance* inst);
 static int reduce_alternate(eroc_regex_compiler_instance* inst);
@@ -214,7 +216,7 @@ static int shift_instruction(eroc_regex_compiler_instance* inst, int ch)
  *
  * \param inst          The compiler instance for this operation.
  * \param ch            The instruction to shift.
- * \param maybe_invert  Should we treat a carat as an invert?
+ * \param maybe_invert  Should we treat a caret as an invert?
  *
  * \returns 0 on success and non-zero on failure.
  */
@@ -236,8 +238,9 @@ static int shift_char_class_instruction(
             }
             else
             {
-                retval = 2;
+                retval = add_member_char_class_instruction(inst, ch);
             }
+            break;
 
         default:
             retval = 1;
@@ -468,6 +471,26 @@ static int invert_char_class_instruction( eroc_regex_compiler_instance* inst)
     inst->state = EROC_REGEX_COMPILER_STATE_IN_CHAR_CLASS;
 
     return 0;
+}
+
+/**
+ * \brief Add a character to the char class instruction on the stack.
+ *
+ * \param inst              The compiler instance for this operation.
+ *
+ * \returns 0 on success and non-zero on failure.
+ */
+static int add_member_char_class_instruction(
+    eroc_regex_compiler_instance* inst, int ch)
+{
+    /* verify that the instruction is on the stack. */
+    if (NULL == inst->head || EROC_REGEX_AST_CHAR_CLASS != inst->head->type)
+    {
+        return 1;
+    }
+
+    /* add this character to the instruction. */
+    return eroc_regex_ast_char_class_member_add(inst->head, ch);
 }
 
 /**
