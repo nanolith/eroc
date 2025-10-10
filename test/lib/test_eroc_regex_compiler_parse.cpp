@@ -629,10 +629,39 @@ TEST(parse_escaped_literal)
     TEST_ASSERT(nullptr != ast);
     /* ast does not have a next pointer. */
     TEST_EXPECT(nullptr == ast->next);
-    /* ast's type is ANY. */
+    /* ast's type is LITERAL. */
     TEST_ASSERT(EROC_REGEX_AST_LITERAL == ast->type);
     /* the literal is '['. */
     TEST_EXPECT('[' == ast->data.literal);
+
+    /* clean up. */
+    eroc_regex_ast_node_release(ast);
+}
+
+/**
+ * \brief We can parse a \d shorthand digit.
+ */
+TEST(parse_d_shorthand_digit)
+{
+    eroc_regex_ast_node* ast;
+    const char* INPUT = R"(\d)";
+
+    TEST_ASSERT(0 == eroc_regex_compiler_parse(&ast, INPUT));
+
+    /* ast is not NULL. */
+    TEST_ASSERT(nullptr != ast);
+    /* ast does not have a next pointer. */
+    TEST_EXPECT(nullptr == ast->next);
+    /* ast's type is CHAR_CLASS. */
+    TEST_ASSERT(EROC_REGEX_AST_CHAR_CLASS == ast->type);
+    /* this char class is NOT inverted. */
+    TEST_EXPECT(!ast->data.char_class.inverse);
+    /* This is shorthand for [0-9]. */
+    for (int i = '0'; i <= '9'; ++i)
+    {
+        /* i is a member of this char class. */
+        TEST_EXPECT(eroc_regex_ast_char_class_member_check(ast, i));
+    }
 
     /* clean up. */
     eroc_regex_ast_node_release(ast);
