@@ -1121,3 +1121,32 @@ TEST(parse_naked_plus_alternative_failure)
 
     TEST_ASSERT(0 != eroc_regex_compiler_parse(&ast, INPUT));
 }
+
+/**
+ * \brief We can parse an optional instruction.
+ */
+TEST(parse_optional)
+{
+    eroc_regex_ast_node* ast;
+    const char* INPUT = ".?";
+
+    TEST_ASSERT(0 == eroc_regex_compiler_parse(&ast, INPUT));
+
+    /* ast is not NULL. */
+    TEST_ASSERT(nullptr != ast);
+    /* ast does not have a next pointer. */
+    TEST_EXPECT(nullptr == ast->next);
+    /* ast's type is OPTIONAL. */
+    TEST_EXPECT(EROC_REGEX_AST_OPTIONAL == ast->type);
+
+    /* child is not NULL. */
+    auto child = ast->data.unary.child;
+    TEST_ASSERT(nullptr != child);
+    /* child does not have a next pointer. */
+    TEST_EXPECT(nullptr == child->next);
+    /* child's type is ANY. */
+    TEST_EXPECT(EROC_REGEX_AST_ANY == child->type);
+
+    /* clean up. */
+    eroc_regex_ast_node_release(ast);
+}
