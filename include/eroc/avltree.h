@@ -139,7 +139,7 @@ int eroc_avl_tree_delete_nodes(eroc_avl_tree* tree, eroc_avl_tree_node* node);
 void eroc_avl_tree_insert(eroc_avl_tree* tree, eroc_avl_tree_node* node);
 
 /**
- * \brief Find an element in the AVL tree matching the given user defined key.
+ * \brief Find a node in the AVL tree matching the given user defined key.
  *
  * \param node          Pointer to the node pointer to set to the found element
  *                      if found.
