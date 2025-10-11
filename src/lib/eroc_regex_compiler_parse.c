@@ -48,6 +48,7 @@ static int reduce_char_class_range(eroc_regex_compiler_instance* inst);
 static bool has_char_class_members(const eroc_regex_ast_node* ast);
 static int shift_star_instruction(eroc_regex_compiler_instance* inst);
 static int shift_plus_instruction(eroc_regex_compiler_instance* inst);
+static int shift_optional_instruction(eroc_regex_compiler_instance* inst);
 
 /**
  * \brief Given an input string, create an AST for further processing.
@@ -227,6 +228,10 @@ static int shift_instruction(eroc_regex_compiler_instance* inst, int ch)
 
         case '+':
             retval = shift_plus_instruction(inst);
+            break;
+
+        case '?':
+            retval = shift_optional_instruction(inst);
             break;
 
         case '\\':
@@ -1181,6 +1186,48 @@ static int shift_plus_instruction(eroc_regex_compiler_instance* inst)
     child->next = NULL;
 
     /* shift the plus instruction onto the stack. */
+    ast->next = inst->head;
+    inst->head = ast;
+
+    return 0;
+}
+
+/**
+ * \brief Shift an optional instruction onto the stack.
+ *
+ * \param inst          The compiler instance for this operation.
+ *
+ * \returns 0 on success and non-zero on failure.
+ */
+static int shift_optional_instruction(eroc_regex_compiler_instance* inst)
+{
+    eroc_regex_ast_node* child = inst->head;
+    eroc_regex_ast_node* ast;
+
+    /* verify that child is valid. */
+    if (NULL == child)
+    {
+        return 1;
+    }
+
+    /* verify that child is NOT a pseudoinstruction. */
+    if (is_pseudoinstruction(child))
+    {
+        return 2;
+    }
+
+    /* create an optional node. */
+    int retval = eroc_regex_ast_node_optional_create(&ast, child);
+    if (0 != retval)
+    {
+        return retval;
+    }
+
+    /* shift the child off of the stack. */
+    inst->head = child->next;
+    child->next = NULL;
+
+    /* shift the star instruction onto the stack. */
     ast->next = inst->head;
     inst->head = ast;
 
