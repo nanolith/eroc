@@ -1018,9 +1018,9 @@ TEST(parse_star)
     /* child is not NULL. */
     auto child = ast->data.unary.child;
     TEST_ASSERT(nullptr != child);
-    /* left does not have a next pointer. */
+    /* child does not have a next pointer. */
     TEST_EXPECT(nullptr == child->next);
-    /* left's type is CHAR_CLASS. */
+    /* child's type is CHAR_CLASS. */
     TEST_EXPECT(EROC_REGEX_AST_CHAR_CLASS == child->type);
 
     /* clean up. */
@@ -1058,4 +1058,33 @@ TEST(parse_naked_star_alternative_failure)
     const char* INPUT = "a|*";
 
     TEST_ASSERT(0 != eroc_regex_compiler_parse(&ast, INPUT));
+}
+
+/**
+ * \brief We can parse a plus instruction.
+ */
+TEST(parse_plus)
+{
+    eroc_regex_ast_node* ast;
+    const char* INPUT = "[abc]+";
+
+    TEST_ASSERT(0 == eroc_regex_compiler_parse(&ast, INPUT));
+
+    /* ast is not NULL. */
+    TEST_ASSERT(nullptr != ast);
+    /* ast does not have a next pointer. */
+    TEST_EXPECT(nullptr == ast->next);
+    /* ast's type is PLUS. */
+    TEST_EXPECT(EROC_REGEX_AST_PLUS == ast->type);
+
+    /* child is not NULL. */
+    auto child = ast->data.unary.child;
+    TEST_ASSERT(nullptr != child);
+    /* child does not have a next pointer. */
+    TEST_EXPECT(nullptr == child->next);
+    /* child's type is CHAR_CLASS. */
+    TEST_EXPECT(EROC_REGEX_AST_CHAR_CLASS == child->type);
+
+    /* clean up. */
+    eroc_regex_ast_node_release(ast);
 }
