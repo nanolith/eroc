@@ -15,7 +15,7 @@ extern "C" {
 # endif /*__cplusplus*/
 
 /**
- * \brief Type erased AVL tree node
+ * \brief Type erased AVL tree node.
  */
 typedef struct eroc_avl_tree_node eroc_avl_tree_node;
 
@@ -26,6 +26,21 @@ struct eroc_avl_tree_node
     eroc_avl_tree_node* right;
     int height;
 };
+
+/**
+ * \brief Comparison function type for comparing two AVL tree keys.
+ *
+ * \param context       Context data to be passed to the comparison function.
+ * \param lhs           The left-hand key of the comparison.
+ * \param rhs           The right-hand key of the comparison.
+ *
+ * \returns an integer value representing the comparison result.
+ *      - &lt; 0 if \p lhs &lt; \p rhs.
+ *      - 0 if \p lhs == \p rhs.
+ *      - &gt; 0 if \p lhs &gt; \p rhs.
+ */
+typedef int (*eroc_avl_tree_compare_fn)(
+    void* context, const void* lhs, const void* rhs);
 
 /* C++ compatibility. */
 # ifdef   __cplusplus
