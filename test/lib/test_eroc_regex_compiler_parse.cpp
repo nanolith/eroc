@@ -1150,3 +1150,14 @@ TEST(parse_optional)
     /* clean up. */
     eroc_regex_ast_node_release(ast);
 }
+
+/**
+ * \brief It is an error to attempt a naked optional instruction.
+ */
+TEST(parse_naked_optional_failure)
+{
+    eroc_regex_ast_node* ast;
+    const char* INPUT = "?";
+
+    TEST_ASSERT(0 != eroc_regex_compiler_parse(&ast, INPUT));
+}
