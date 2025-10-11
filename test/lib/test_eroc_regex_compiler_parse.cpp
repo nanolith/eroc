@@ -997,3 +997,32 @@ TEST(parse_escaped_vertical_tab)
     /* clean up. */
     eroc_regex_ast_node_release(ast);
 }
+
+/**
+ * \brief We can parse a star instruction.
+ */
+TEST(parse_star)
+{
+    eroc_regex_ast_node* ast;
+    const char* INPUT = "[123]*";
+
+    TEST_ASSERT(0 == eroc_regex_compiler_parse(&ast, INPUT));
+
+    /* ast is not NULL. */
+    TEST_ASSERT(nullptr != ast);
+    /* ast does not have a next pointer. */
+    TEST_EXPECT(nullptr == ast->next);
+    /* ast's type is STAR. */
+    TEST_EXPECT(EROC_REGEX_AST_STAR == ast->type);
+
+    /* child is not NULL. */
+    auto child = ast->data.unary.child;
+    TEST_ASSERT(nullptr != child);
+    /* left does not have a next pointer. */
+    TEST_EXPECT(nullptr == child->next);
+    /* left's type is CHAR_CLASS. */
+    TEST_EXPECT(EROC_REGEX_AST_CHAR_CLASS == child->type);
+
+    /* clean up. */
+    eroc_regex_ast_node_release(ast);
+}
