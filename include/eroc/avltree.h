@@ -165,6 +165,14 @@ bool eroc_avl_tree_find(
 bool eroc_avl_tree_delete(
     eroc_avl_tree_node** node, eroc_avl_tree* tree, const void* key);
 
+/**
+ * \brief Swap the contents of two AVL tree instances.
+ *
+ * \param left          The left AVL tree for the swap.
+ * \param right         The right AVL tree for the swap.
+ */
+void eroc_avl_tree_swap(eroc_avl_tree* left, eroc_avl_tree* right);
+
 /* C++ compatibility. */
 # ifdef   __cplusplus
 }
