@@ -208,6 +208,17 @@ eroc_avl_tree_node* eroc_avl_tree_maximum_node(
 eroc_avl_tree_node* eroc_avl_tree_successor_node(
     eroc_avl_tree* tree, eroc_avl_tree_node* x);
 
+/**
+ * \brief Return the in-order predecessor node of the given node, or NULL.
+ *
+ * \param tree          The AVL tree for this operation.
+ * \param x             The node from which this predecessor is found.
+ *
+ * \returns the predecessor node of this node, or NULL if none is found.
+ */
+eroc_avl_tree_node* eroc_avl_tree_predecessor_node(
+    eroc_avl_tree* tree, eroc_avl_tree_node* x);
+
 /* C++ compatibility. */
 # ifdef   __cplusplus
 }
