@@ -127,6 +127,16 @@ int eroc_avl_tree_clear(eroc_avl_tree* tree);
  */
 int eroc_avl_tree_delete_nodes(eroc_avl_tree* tree, eroc_avl_tree_node* node);
 
+/**
+ * \brief Insert a node into the AVL tree instance.
+ *
+ * \note The AVL tree takes ownership of this node.
+ *
+ * \param tree          The tree instance for this insert operation.
+ * \param node          The node to insert.
+ */
+void eroc_avl_tree_insert(eroc_avl_tree* tree, eroc_avl_tree_node* node);
+
 /* C++ compatibility. */
 # ifdef   __cplusplus
 }
