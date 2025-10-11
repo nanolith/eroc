@@ -219,6 +219,16 @@ eroc_avl_tree_node* eroc_avl_tree_successor_node(
 eroc_avl_tree_node* eroc_avl_tree_predecessor_node(
     eroc_avl_tree* tree, eroc_avl_tree_node* x);
 
+/**
+ * \brief Perform a right rotation on an AVL tree.
+ *
+ * Root will become root->left's right-most child, and root->left will become
+ * the new root of this subtree.
+ *
+ * \param root          The root for this rotation.
+ */
+void eroc_avl_tree_rotate_right(eroc_avl_tree_node** root);
+
 /* C++ compatibility. */
 # ifdef   __cplusplus
 }
