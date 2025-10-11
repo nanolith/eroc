@@ -951,3 +951,26 @@ TEST(parse_escaped_formfeed)
     /* clean up. */
     eroc_regex_ast_node_release(ast);
 }
+
+/**
+ * \brief We can parse a tab.
+ */
+TEST(parse_escaped_tab)
+{
+    eroc_regex_ast_node* ast;
+    const char* INPUT = R"(\t)";
+
+    TEST_ASSERT(0 == eroc_regex_compiler_parse(&ast, INPUT));
+
+    /* ast is not NULL. */
+    TEST_ASSERT(nullptr != ast);
+    /* ast does not have a next pointer. */
+    TEST_EXPECT(nullptr == ast->next);
+    /* ast's type is LITERAL. */
+    TEST_ASSERT(EROC_REGEX_AST_LITERAL == ast->type);
+    /* the literal is '\t'. */
+    TEST_EXPECT('\t' == ast->data.literal);
+
+    /* clean up. */
+    eroc_regex_ast_node_release(ast);
+}
