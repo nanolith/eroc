@@ -8,7 +8,6 @@
  */
 
 #include <eroc/avltree.h>
-#include <stdlib.h>
 
 static inline int max(int lhs, int rhs)
 {
