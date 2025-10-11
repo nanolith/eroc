@@ -1037,3 +1037,14 @@ TEST(parse_naked_star_failure)
 
     TEST_ASSERT(0 != eroc_regex_compiler_parse(&ast, INPUT));
 }
+
+/**
+ * \brief It is an error to attempt a star in the middle of a pseudoinstruction.
+ */
+TEST(parse_naked_star_pseudo)
+{
+    eroc_regex_ast_node* ast;
+    const char* INPUT = "(*";
+
+    TEST_ASSERT(0 != eroc_regex_compiler_parse(&ast, INPUT));
+}
