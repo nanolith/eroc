@@ -1173,3 +1173,14 @@ TEST(parse_naked_optional_pseudo_failure)
 
     TEST_ASSERT(0 != eroc_regex_compiler_parse(&ast, INPUT));
 }
+
+/**
+ * \brief It is an error to attempt an optional in the middle of an alternative.
+ */
+TEST(parse_naked_optional_alternative_failure)
+{
+    eroc_regex_ast_node* ast;
+    const char* INPUT = "a|?";
+
+    TEST_ASSERT(0 != eroc_regex_compiler_parse(&ast, INPUT));
+}
