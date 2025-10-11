@@ -52,6 +52,17 @@ typedef int (*eroc_avl_tree_compare_fn)(
  */
 typedef const void* (*eroc_avl_tree_key_fn)(void* context, const void* elem);
 
+/**
+ * \brief Given an AVL tree node, release it.
+ *
+ * \param context       Context data to be passed to the release function.
+ * \param node          Teh node to release.
+ *
+ * \returns 0 on success and non-zero on failure.
+ */
+typedef int (*eroc_avl_tree_release_fn)(
+    void* context, eroc_avl_tree_node* node);
+
 /* C++ compatibility. */
 # ifdef   __cplusplus
 }
