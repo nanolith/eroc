@@ -360,6 +360,9 @@ static int shift_escaped_instruction(
         case 't':
             return shift_literal_instruction(inst, '\t');
 
+        case 'v':
+            return shift_literal_instruction(inst, '\v');
+
         /* by default, escape this as a literal. */
         default:
             return shift_literal_instruction(inst, ch);
