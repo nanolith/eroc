@@ -9,6 +9,8 @@
 
 #pragma once
 
+#include <stddef.h>
+
 /* C++ compatibility. */
 # ifdef   __cplusplus
 extern "C" {
@@ -62,6 +64,21 @@ typedef const void* (*eroc_avl_tree_key_fn)(void* context, const void* elem);
  */
 typedef int (*eroc_avl_tree_release_fn)(
     void* context, eroc_avl_tree_node* node);
+
+/**
+ * \brief AVL tree.
+ */
+typedef struct eroc_avl_tree eroc_avl_tree;
+
+struct eroc_avl_tree
+{
+    eroc_avl_tree_compare_fn compare_fn;
+    eroc_avl_tree_key_fn key_fn;
+    eroc_avl_tree_release_fn release_fn;
+    void* context;
+    eroc_avl_tree_node* root;
+    size_t count;
+};
 
 /* C++ compatibility. */
 # ifdef   __cplusplus
