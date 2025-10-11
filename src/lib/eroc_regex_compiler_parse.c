@@ -357,6 +357,9 @@ static int shift_escaped_instruction(
         case 'n':
             return shift_literal_instruction(inst, '\n');
 
+        case 't':
+            return shift_literal_instruction(inst, '\t');
+
         /* by default, escape this as a literal. */
         default:
             return shift_literal_instruction(inst, ch);
