@@ -845,3 +845,33 @@ TEST(parse_W_shorthand_digit)
     /* clean up. */
     eroc_regex_ast_node_release(ast);
 }
+
+/**
+ * \brief We can parse an \s shorthand digit.
+ */
+TEST(parse_s_shorthand_digit)
+{
+    eroc_regex_ast_node* ast;
+    const char* INPUT = R"(\s)";
+
+    TEST_ASSERT(0 == eroc_regex_compiler_parse(&ast, INPUT));
+
+    /* ast is not NULL. */
+    TEST_ASSERT(nullptr != ast);
+    /* ast does not have a next pointer. */
+    TEST_EXPECT(nullptr == ast->next);
+    /* ast's type is CHAR_CLASS. */
+    TEST_ASSERT(EROC_REGEX_AST_CHAR_CLASS == ast->type);
+    /* this char class is NOT inverted. */
+    TEST_EXPECT(!ast->data.char_class.inverse);
+    /* This is shorthand for [ \t\n\r\f\v]. */
+    TEST_EXPECT(eroc_regex_ast_char_class_member_check(ast, ' '));
+    TEST_EXPECT(eroc_regex_ast_char_class_member_check(ast, '\t'));
+    TEST_EXPECT(eroc_regex_ast_char_class_member_check(ast, '\n'));
+    TEST_EXPECT(eroc_regex_ast_char_class_member_check(ast, '\r'));
+    TEST_EXPECT(eroc_regex_ast_char_class_member_check(ast, '\f'));
+    TEST_EXPECT(eroc_regex_ast_char_class_member_check(ast, '\v'));
+
+    /* clean up. */
+    eroc_regex_ast_node_release(ast);
+}
