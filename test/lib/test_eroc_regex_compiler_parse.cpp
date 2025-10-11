@@ -1099,3 +1099,14 @@ TEST(parse_naked_plus_failure)
 
     TEST_ASSERT(0 != eroc_regex_compiler_parse(&ast, INPUT));
 }
+
+/**
+ * \brief It is an error to attempt a plus in the middle of a pseudoinstruction.
+ */
+TEST(parse_naked_plus_pseudo_failure)
+{
+    eroc_regex_ast_node* ast;
+    const char* INPUT = "(+";
+
+    TEST_ASSERT(0 != eroc_regex_compiler_parse(&ast, INPUT));
+}
