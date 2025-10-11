@@ -97,6 +97,16 @@ int eroc_avl_tree_create(
     eroc_avl_tree_key_fn key_fn, eroc_avl_tree_release_fn release_fn,
     void* context);
 
+/**
+ * \brief Release an \ref eroc_avl_tree instance, calling the user release
+ * function on any elements in the tree.
+ *
+ * \param tree          The tree instance to release.
+ *
+ * \returns 0 on success and non-zero on failure.
+ */
+int eroc_avl_tree_release(eroc_avl_tree* tree);
+
 /* C++ compatibility. */
 # ifdef   __cplusplus
 }
