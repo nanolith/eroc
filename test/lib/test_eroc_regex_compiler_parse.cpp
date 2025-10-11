@@ -1026,3 +1026,14 @@ TEST(parse_star)
     /* clean up. */
     eroc_regex_ast_node_release(ast);
 }
+
+/**
+ * \brief It is an error to attempt a naked star instruction.
+ */
+TEST(parse_naked_star_failure)
+{
+    eroc_regex_ast_node* ast;
+    const char* INPUT = "*";
+
+    TEST_ASSERT(0 != eroc_regex_compiler_parse(&ast, INPUT));
+}
