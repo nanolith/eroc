@@ -116,6 +116,17 @@ int eroc_avl_tree_release(eroc_avl_tree* tree);
  */
 int eroc_avl_tree_clear(eroc_avl_tree* tree);
 
+/**
+ * \brief Recursively release all nodes under a given node as well as this node
+ * in a tree.
+ *
+ * \param tree          The tree instance for this delete operation.
+ * \param node          The node to recursively delete.
+ *
+ * \returns 0 on success and non-zero on failure.
+ */
+int eroc_avl_tree_delete_nodes(eroc_avl_tree* tree, eroc_avl_tree_node* node);
+
 /* C++ compatibility. */
 # ifdef   __cplusplus
 }
