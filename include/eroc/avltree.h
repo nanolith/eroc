@@ -185,6 +185,18 @@ void eroc_avl_tree_swap(eroc_avl_tree* left, eroc_avl_tree* right);
 eroc_avl_tree_node* eroc_avl_tree_minimum_node(
     eroc_avl_tree* tree, eroc_avl_tree_node* x);
 
+/**
+ * \brief Given a subtree node, return the maximum node in this subtree.
+ *
+ * \param tree          The AVL tree for this operation.
+ * \param x             The node from which this search should start. Must not
+ *                      be NULL.
+ *
+ * \returns the maximum node in this subtree.
+ */
+eroc_avl_tree_node* eroc_avl_tree_maximum_node(
+    eroc_avl_tree* tree, eroc_avl_tree_node* x);
+
 /* C++ compatibility. */
 # ifdef   __cplusplus
 }
