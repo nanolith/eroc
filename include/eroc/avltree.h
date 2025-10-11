@@ -42,6 +42,16 @@ struct eroc_avl_tree_node
 typedef int (*eroc_avl_tree_compare_fn)(
     void* context, const void* lhs, const void* rhs);
 
+/**
+ * \brief Given an AVL tree node, return the key for this node.
+ *
+ * \param context       Context data to be passed to the accessor function.
+ * \param node          The node.
+ *
+ * \returns the key for this node.
+ */
+typedef const void* (*eroc_avl_tree_key_fn)(void* context, const void* elem);
+
 /* C++ compatibility. */
 # ifdef   __cplusplus
 }
