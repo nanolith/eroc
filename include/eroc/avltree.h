@@ -9,6 +9,7 @@
 
 #pragma once
 
+#include <stdbool.h>
 #include <stddef.h>
 
 /* C++ compatibility. */
@@ -136,6 +137,19 @@ int eroc_avl_tree_delete_nodes(eroc_avl_tree* tree, eroc_avl_tree_node* node);
  * \param node          The node to insert.
  */
 void eroc_avl_tree_insert(eroc_avl_tree* tree, eroc_avl_tree_node* node);
+
+/**
+ * \brief Find an element in the AVL tree matching the given user defined key.
+ *
+ * \param node          Pointer to the node pointer to set to the found element
+ *                      on success.
+ * \param tree          The tree instance for this find operation.
+ * \param key           The user-defined key for this find operation.
+ *
+ * \returns true if this element was found and false otherwise.
+ */
+bool eroc_avl_tree_find(
+    eroc_avl_tree_node* node, eroc_avl_tree* tree, const void* key);
 
 /* C++ compatibility. */
 # ifdef   __cplusplus
