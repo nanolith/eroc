@@ -1041,10 +1041,21 @@ TEST(parse_naked_star_failure)
 /**
  * \brief It is an error to attempt a star in the middle of a pseudoinstruction.
  */
-TEST(parse_naked_star_pseudo)
+TEST(parse_naked_star_pseudo_failure)
 {
     eroc_regex_ast_node* ast;
     const char* INPUT = "(*";
+
+    TEST_ASSERT(0 != eroc_regex_compiler_parse(&ast, INPUT));
+}
+
+/**
+ * \brief It is an error to attempt a star in the middle of an alternative.
+ */
+TEST(parse_naked_star_alternative_failure)
+{
+    eroc_regex_ast_node* ast;
+    const char* INPUT = "a|*";
 
     TEST_ASSERT(0 != eroc_regex_compiler_parse(&ast, INPUT));
 }
