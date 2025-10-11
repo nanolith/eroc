@@ -351,6 +351,9 @@ static int shift_escaped_instruction(
         case 'w':
             return shift_shorthand_char_class(inst, ch);
 
+        case 'f':
+            return shift_literal_instruction(inst, '\f');
+
         case 'n':
             return shift_literal_instruction(inst, '\n');
 
