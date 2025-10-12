@@ -811,3 +811,99 @@ TEST(right_and_left_of_root_node_insert_root_delete)
     /* clean up. */
     TEST_ASSERT(0 == eroc_avl_tree_release(tree));
 }
+
+/**
+ * Test an height five tree, deleting different nodes methodically and verifying
+ * that BF and reachability are maintained.
+ */
+TEST(height_five_tree)
+{
+    int keys[] = {
+         1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15, 16, 17, 18,
+        19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 };
+    const char* values[] = {
+        " 1", " 2", " 3", " 4", " 5", " 6", " 7", " 8", " 9", "10", "11", "12",
+        "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24",
+        "25", "26", "27", "28", "29", "30", "31" };
+
+    for (int i = 0; i < 31; ++i)
+    {
+        eroc_avl_tree* tree;
+
+        /* create the avl_tree. */
+        TEST_ASSERT(
+            0
+                == eroc_avl_tree_create(
+                        &tree, (eroc_avl_tree_compare_fn)&test_compare,
+                        (eroc_avl_tree_key_fn)&test_key,
+                        (eroc_avl_tree_release_fn)&test_node_release,
+                        NULL));
+
+        /* insert each element. */
+        for (int j = 0; j < 31; ++j)
+        {
+            test_node* node = test_node_create(keys[j], values[j]);
+            eroc_avl_tree_insert(tree, &node->hdr);
+        }
+
+        /* delete the ith element. */
+        TEST_ASSERT(0 == eroc_avl_tree_delete(NULL, tree, keys + i));
+
+        /* we can find each of the other elements. */
+        for (int j = 0; j < 31; ++j)
+        {
+            if (j != i)
+            {
+                test_node* node = NULL;
+
+                TEST_ASSERT(
+                    eroc_avl_tree_find(
+                        (eroc_avl_tree_node**)&node, tree, keys + j));
+                TEST_ASSERT(NULL != node);
+                TEST_ASSERT(keys[j] == node->key);
+                TEST_ASSERT(!strcmp(values[j], node->value));
+
+                int left_height =
+                    node->hdr.left ? node->hdr.left->height : 0;
+                int right_height =
+                    node->hdr.right ? node->hdr.right->height : 0;
+                int bf = left_height - right_height;
+
+                TEST_ASSERT(
+                    std::max(left_height, right_height) + 1
+                        == node->hdr.height);
+                TEST_ASSERT(bf > -2 && bf < 2);
+            }
+        }
+
+        /* we can perform an in-order traversal of the tree. */
+        test_node* x = (test_node*)eroc_avl_tree_minimum_node(tree, tree->root);
+
+        for (int j = 0; j < 31; ++j)
+        {
+            if (j != i)
+            {
+                TEST_ASSERT(NULL != x);
+
+                TEST_ASSERT(keys[j] == x->key);
+                TEST_ASSERT(!strcmp(values[j], x->value));
+
+                int left_height = x->hdr.left ? x->hdr.left->height : 0;
+                int right_height = x->hdr.right ? x->hdr.right->height : 0;
+                int bf = left_height - right_height;
+
+                TEST_ASSERT(
+                    std::max(left_height, right_height) + 1 == x->hdr.height);
+                TEST_ASSERT(bf > -2 && bf < 2);
+
+                x = (test_node*)eroc_avl_tree_successor_node(tree, &x->hdr);
+            }
+        }
+
+        /* we should have exhausted all nodes. */
+        TEST_ASSERT(NULL == x);
+
+        /* release the avl_tree. */
+        TEST_ASSERT(0 == eroc_avl_tree_release(tree));
+    }
+}
