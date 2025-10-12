@@ -239,6 +239,17 @@ void eroc_avl_tree_rotate_right(eroc_avl_tree_node** root);
  */
 void eroc_avl_tree_rotate_left(eroc_avl_tree_node** root);
 
+/**
+ * \brief Remove the given node from the tree, transplanting nodes as needed.
+ *
+ * \note This operation does not release the node. Ownership is transferred to
+ * the caller.
+ *
+ * \param tree          The tree for this remove operation.
+ * \param node          The node to remove.
+ */
+void eroc_avl_tree_remove_node(eroc_avl_tree* tree, eroc_avl_tree_node* node);
+
 /* C++ compatibility. */
 # ifdef   __cplusplus
 }
