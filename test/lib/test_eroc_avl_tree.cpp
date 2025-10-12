@@ -433,3 +433,61 @@ TEST(little_left_big_left_node_insert)
     /* clean up. */
     TEST_ASSERT(0 == eroc_avl_tree_release(tree));
 }
+
+/**
+ * A big-right-little-right insertion should balance the tree by rotating to the
+ * right and then to the left.
+ */
+TEST(big_right_little_right_node_insert)
+{
+    eroc_avl_tree* tree;
+
+    test_node* seven = test_node_create(7, "seven");
+    test_node* fourteen = test_node_create(14, "fourteen");
+    test_node* ten = test_node_create(10, "ten");
+
+    /* we can create the tree. */
+    TEST_ASSERT(
+        0
+            == eroc_avl_tree_create(
+                    &tree, (eroc_avl_tree_compare_fn)&test_compare,
+                    (eroc_avl_tree_key_fn)&test_key,
+                    (eroc_avl_tree_release_fn)&test_node_release, NULL));
+
+    /* insert the seven node. */
+    eroc_avl_tree_insert(tree, &seven->hdr);
+
+    /* insert the fourteen node. */
+    eroc_avl_tree_insert(tree, &fourteen->hdr);
+
+    /* insert the ten node. */
+    eroc_avl_tree_insert(tree, &ten->hdr);
+
+    /* verify the root node. */
+    TEST_ASSERT(nullptr != tree->root);
+    TEST_ASSERT(nullptr != tree->root->left);
+    TEST_ASSERT(nullptr != tree->root->right);
+    TEST_ASSERT(nullptr == tree->root->parent);
+    TEST_ASSERT(&ten->hdr == tree->root);
+    TEST_ASSERT(2 == tree->root->height);
+
+    /* verify the seven node. */
+    TEST_ASSERT(&seven->hdr == tree->root->left);
+    TEST_ASSERT(nullptr == seven->hdr.left);
+    TEST_ASSERT(nullptr == seven->hdr.right);
+    TEST_ASSERT(&ten->hdr == seven->hdr.parent);
+    TEST_ASSERT(1 == seven->hdr.height);
+
+    /* verify the fourteen node. */
+    TEST_ASSERT(&fourteen->hdr == tree->root->right);
+    TEST_ASSERT(nullptr == fourteen->hdr.left);
+    TEST_ASSERT(nullptr == fourteen->hdr.right);
+    TEST_ASSERT(&ten->hdr == fourteen->hdr.parent);
+    TEST_ASSERT(1 == fourteen->hdr.height);
+
+    /* verify the count. */
+    TEST_ASSERT(3 == tree->count);
+
+    /* clean up. */
+    TEST_ASSERT(0 == eroc_avl_tree_release(tree));
+}
