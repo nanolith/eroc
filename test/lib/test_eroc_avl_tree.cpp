@@ -7,10 +7,13 @@
  * distribution for the license terms under which this software is distributed.
  */
 
+#include <algorithm>
 #include <eroc/avltree.h>
 #include <minunit/minunit.h>
 #include <stdlib.h>
 #include <string.h>
+
+using namespace std;
 
 TEST_SUITE(eroc_avl_tree);
 
@@ -490,4 +493,69 @@ TEST(big_right_little_right_node_insert)
 
     /* clean up. */
     TEST_ASSERT(0 == eroc_avl_tree_release(tree));
+}
+
+/**
+ * Insert all of the permutations of 1..7 into binary trees, verifying the
+ * count, height, and traversal order.
+ */
+TEST(one_to_7)
+{
+    const char* elem_names[] = {
+        "1_one", "2_two", "3_three", "4_four", "5_five", "6_six", "7_seven" };
+    int elem_keys[] = { 1, 2, 3, 4, 5, 6, 7 };
+
+    do
+    {
+        eroc_avl_tree* tree;
+
+        /* create the AVL tree. */
+        TEST_ASSERT(
+            0
+                == eroc_avl_tree_create(
+                        &tree, (eroc_avl_tree_compare_fn)&test_compare,
+                        (eroc_avl_tree_key_fn)&test_key,
+                        (eroc_avl_tree_release_fn)&test_node_release, NULL));
+
+        /* insert each element. */
+        for (int i = 0; i < 7; ++i)
+        {
+            /* create node. */
+            test_node* node = test_node_create(elem_keys[i], elem_names[i]);
+
+            /* insert the node. */
+            eroc_avl_tree_insert(tree, &node->hdr);
+        }
+
+        /* the count is 7. */
+        TEST_ASSERT(7 == tree->count);
+
+        size_t traversed_count = 0;
+
+        for (
+            auto node = eroc_avl_tree_minimum_node(tree, tree->root);
+            NULL != node;
+            node = eroc_avl_tree_successor_node(tree, node))
+        {
+            ++traversed_count;
+
+            /* verify that this subtree is balanced according to our rules. */
+            int left_height = node->left ? node->left->height : 0;
+            int right_height = node->right ? node->right->height : 0;
+            int bf = left_height - right_height;
+            TEST_ASSERT(bf > -2 && bf < 2);
+
+            /* verify that this node is our expected node. */
+            auto tn = (test_node*)node;
+            TEST_ASSERT(traversed_count == (unsigned)tn->key);
+        }
+
+        /* we should have traversed 7 nodes. */
+        TEST_ASSERT(7 == traversed_count);
+
+        /* release the AVL tree. */
+        TEST_ASSERT(0 == eroc_avl_tree_release(tree));
+    } while (
+        next_permutation(elem_names, elem_names + 7)
+        && next_permutation(elem_keys, elem_keys + 7));
 }
