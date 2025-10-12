@@ -559,3 +559,34 @@ TEST(one_to_7)
         next_permutation(elem_names, elem_names + 7)
         && next_permutation(elem_keys, elem_keys + 7));
 }
+
+/**
+ * Test that we can insert and delete a root node.
+ */
+TEST(root_node_insert_delete)
+{
+    eroc_avl_tree* tree;
+
+    test_node* root = test_node_create(7, "seven");
+
+    /* we can create the tree. */
+    TEST_ASSERT(
+        0
+            == eroc_avl_tree_create(
+                    &tree, (eroc_avl_tree_compare_fn)&test_compare,
+                    (eroc_avl_tree_key_fn)&test_key,
+                    (eroc_avl_tree_release_fn)&test_node_release, NULL));
+
+    /* insert the root node. */
+    eroc_avl_tree_insert(tree, &root->hdr);
+
+    /* delete the root node. */
+    TEST_ASSERT(0 == eroc_avl_tree_delete(NULL, tree, &root->key));
+
+    /* the tree is now empty. */
+    TEST_ASSERT(NULL == tree->root);
+    TEST_ASSERT(0 == tree->count);
+
+    /* clean up. */
+    TEST_ASSERT(0 == eroc_avl_tree_release(tree));
+}
