@@ -160,9 +160,9 @@ bool eroc_avl_tree_find(
  * \param tree          The AVL tree for this delete operation.
  * \param key           The user-defined key for this delete operation.
  *
- * \returns true if an element was deleted and false otherwise.
+ * \returns 0 on success and non-zero on failure.
  */
-bool eroc_avl_tree_delete(
+int eroc_avl_tree_delete(
     eroc_avl_tree_node** node, eroc_avl_tree* tree, const void* key);
 
 /**
