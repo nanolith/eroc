@@ -53,6 +53,16 @@ static int test_node_release(
     return 0;
 }
 
+static test_node* test_node_create(int key, const char* value)
+{
+    test_node* retval = (test_node*)malloc(sizeof(test_node));
+    memset(retval, 0, sizeof(*retval));
+    retval->key = key;
+    retval->value = strdup(value);
+
+    return retval;
+}
+
 /**
  * Test that we can create and release an eroc_avl_tree instance.
  */
@@ -69,5 +79,36 @@ TEST(create_release)
                     (eroc_avl_tree_release_fn)&test_node_release, NULL));
 
     /* we can release the tree. */
+    TEST_ASSERT(0 == eroc_avl_tree_release(tree));
+}
+
+/**
+ * Test that we can insert a root node.
+ */
+TEST(root_node_insert)
+{
+    eroc_avl_tree* tree;
+
+    test_node* node = test_node_create(7, "seven");
+
+    /* we can create the tree. */
+    TEST_ASSERT(
+        0
+            == eroc_avl_tree_create(
+                    &tree, (eroc_avl_tree_compare_fn)&test_compare,
+                    (eroc_avl_tree_key_fn)&test_key,
+                    (eroc_avl_tree_release_fn)&test_node_release, NULL));
+
+    /* insert the root node. */
+    eroc_avl_tree_insert(tree, &node->hdr);
+
+    TEST_ASSERT(nullptr != tree->root);
+    TEST_ASSERT(nullptr == tree->root->left);
+    TEST_ASSERT(nullptr == tree->root->right);
+    TEST_ASSERT(nullptr == tree->root->parent);
+    TEST_ASSERT(1 == tree->root->height);
+    TEST_ASSERT(1 == tree->count);
+
+    /* clean up. */
     TEST_ASSERT(0 == eroc_avl_tree_release(tree));
 }
