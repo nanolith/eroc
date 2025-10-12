@@ -158,3 +158,49 @@ TEST(left_node_insert)
     /* clean up. */
     TEST_ASSERT(0 == eroc_avl_tree_release(tree));
 }
+
+/**
+ * Test that we can insert a node to the right.
+ */
+TEST(right_node_insert)
+{
+    eroc_avl_tree* tree;
+
+    test_node* root = test_node_create(7, "seven");
+    test_node* right = test_node_create(10, "ten");
+
+    /* we can create the tree. */
+    TEST_ASSERT(
+        0
+            == eroc_avl_tree_create(
+                    &tree, (eroc_avl_tree_compare_fn)&test_compare,
+                    (eroc_avl_tree_key_fn)&test_key,
+                    (eroc_avl_tree_release_fn)&test_node_release, NULL));
+
+    /* insert the root node. */
+    eroc_avl_tree_insert(tree, &root->hdr);
+
+    /* insert a node to the right. */
+    eroc_avl_tree_insert(tree, &right->hdr);
+
+    /* verify the root node. */
+    TEST_ASSERT(nullptr != tree->root);
+    TEST_ASSERT(nullptr == tree->root->left);
+    TEST_ASSERT(nullptr != tree->root->right);
+    TEST_ASSERT(nullptr == tree->root->parent);
+    TEST_ASSERT(&root->hdr == tree->root);
+    TEST_ASSERT(2 == tree->root->height);
+
+    /* verify the right node. */
+    TEST_ASSERT(&right->hdr == tree->root->right);
+    TEST_ASSERT(nullptr == right->hdr.left);
+    TEST_ASSERT(nullptr == right->hdr.right);
+    TEST_ASSERT(&root->hdr == right->hdr.parent);
+    TEST_ASSERT(1 == right->hdr.height);
+
+    /* verify the count. */
+    TEST_ASSERT(2 == tree->count);
+
+    /* clean up. */
+    TEST_ASSERT(0 == eroc_avl_tree_release(tree));
+}
