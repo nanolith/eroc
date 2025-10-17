@@ -166,11 +166,11 @@ static bool is_pseudoinstruction(const eroc_regex_ast_node* ast)
 {
     switch (ast->type)
     {
-        case EROC_REGEX_AST_PLACEHOLDER_START_CAPTURE:
-        case EROC_REGEX_AST_PLACEHOLDER_END_CAPTURE:
-        case EROC_REGEX_AST_PLACEHOLDER_ALTERNATE:
-        case EROC_REGEX_AST_PLACEHOLDER_LITERAL:
-        case EROC_REGEX_AST_PLACEHOLDER_START_RANGE:
+        case EROC_REGEX_AST_PSEUDOINSTRUCTION_START_CAPTURE:
+        case EROC_REGEX_AST_PSEUDOINSTRUCTION_END_CAPTURE:
+        case EROC_REGEX_AST_PSEUDOINSTRUCTION_ALTERNATE:
+        case EROC_REGEX_AST_PSEUDOINSTRUCTION_LITERAL:
+        case EROC_REGEX_AST_PSEUDOINSTRUCTION_START_RANGE:
             return true;
 
         default:
@@ -494,13 +494,13 @@ static int shift_alternate_pseudoinstruction(
     }
 
     /* We can't shift an alternate after an alternate. */
-    if (EROC_REGEX_AST_PLACEHOLDER_ALTERNATE == inst->head->type)
+    if (EROC_REGEX_AST_PSEUDOINSTRUCTION_ALTERNATE == inst->head->type)
     {
         return 2;
     }
 
     /* We can't shift an alternate immediately after a start capture. */
-    if (EROC_REGEX_AST_PLACEHOLDER_START_CAPTURE == inst->head->type)
+    if (EROC_REGEX_AST_PSEUDOINSTRUCTION_START_CAPTURE == inst->head->type)
     {
         return 3;
     }
@@ -513,7 +513,7 @@ static int shift_alternate_pseudoinstruction(
     }
 
     /* override the type to make it an alternate pseudoinstruction. */
-    ast->type = EROC_REGEX_AST_PLACEHOLDER_ALTERNATE;
+    ast->type = EROC_REGEX_AST_PSEUDOINSTRUCTION_ALTERNATE;
 
     /* shift this node onto the stack. */
     ast->next = inst->head;
@@ -542,7 +542,7 @@ static int shift_start_capture_pseudoinstruction(
     }
 
     /* override the type to make it a start capture pseudoinstruction. */
-    ast->type = EROC_REGEX_AST_PLACEHOLDER_START_CAPTURE;
+    ast->type = EROC_REGEX_AST_PSEUDOINSTRUCTION_START_CAPTURE;
 
     /* shift this node onto the stack. */
     ast->next = inst->head;
@@ -570,7 +570,7 @@ static int shift_end_capture_pseudoinstruction(
     }
 
     /* the top of stack can't be a start capture. */
-    if (EROC_REGEX_AST_PLACEHOLDER_START_CAPTURE == inst->head->type)
+    if (EROC_REGEX_AST_PSEUDOINSTRUCTION_START_CAPTURE == inst->head->type)
     {
         return 2;
     }
@@ -583,7 +583,7 @@ static int shift_end_capture_pseudoinstruction(
     }
 
     /* override the type to make it an end capture pseudoinstruction. */
-    ast->type = EROC_REGEX_AST_PLACEHOLDER_END_CAPTURE;
+    ast->type = EROC_REGEX_AST_PSEUDOINSTRUCTION_END_CAPTURE;
 
     /* shift this node onto the stack. */
     ast->next = inst->head;
@@ -641,7 +641,7 @@ static int shift_end_char_class_instruction(
     }
 
     /* is this a literal pseudoinstruction? */
-    if (EROC_REGEX_AST_PLACEHOLDER_LITERAL == inst->head->type)
+    if (EROC_REGEX_AST_PSEUDOINSTRUCTION_LITERAL == inst->head->type)
     {
         retval = reduce_char_class_literal(inst, -1, false);
         if (0 != retval)
@@ -714,8 +714,8 @@ static int add_member_char_class_instruction(
 
     /* is this a literal pseudoinstruction? */
     if (
-        EROC_REGEX_AST_PLACEHOLDER_LITERAL == inst->head->type
-     || EROC_REGEX_AST_PLACEHOLDER_START_RANGE == inst->head->type)
+        EROC_REGEX_AST_PSEUDOINSTRUCTION_LITERAL == inst->head->type
+     || EROC_REGEX_AST_PSEUDOINSTRUCTION_START_RANGE == inst->head->type)
     {
         return reduce_char_class_literal(inst, ch, true);
     }
@@ -733,7 +733,7 @@ static int add_member_char_class_instruction(
     }
 
     /* make this a pseudoliteral. */
-    literal->type = EROC_REGEX_AST_PLACEHOLDER_LITERAL;
+    literal->type = EROC_REGEX_AST_PSEUDOINSTRUCTION_LITERAL;
 
     /* push this value onto the stack. */
     literal->next = inst->head;
@@ -758,12 +758,12 @@ static int add_range_char_class_instruction(eroc_regex_compiler_instance* inst)
     }
 
     /* is this a literal pseudoinstruction? */
-    if (EROC_REGEX_AST_PLACEHOLDER_LITERAL == inst->head->type)
+    if (EROC_REGEX_AST_PSEUDOINSTRUCTION_LITERAL == inst->head->type)
     {
         return reduce_char_class_range(inst);
     }
     /* is this a range pseudoinstruction? */
-    else if (EROC_REGEX_AST_PLACEHOLDER_START_RANGE == inst->head->type)
+    else if (EROC_REGEX_AST_PSEUDOINSTRUCTION_START_RANGE == inst->head->type)
     {
         return reduce_char_class_literal(inst, '-', true);
     }
@@ -817,7 +817,7 @@ static int reduce_char_class_literal(
     if (has_next_character)
     {
         /* if this is a simple literal, then just shift in the new character. */
-        if (EROC_REGEX_AST_PLACEHOLDER_LITERAL == literal->type)
+        if (EROC_REGEX_AST_PSEUDOINSTRUCTION_LITERAL == literal->type)
         {
             literal->data.literal = next_character;
             return 0;
@@ -866,13 +866,13 @@ static int reduce_char_class_range(eroc_regex_compiler_instance* inst)
     }
 
     /* verify that this is a literal pseudoinstruction. */
-    if (EROC_REGEX_AST_PLACEHOLDER_LITERAL != inst->head->type)
+    if (EROC_REGEX_AST_PSEUDOINSTRUCTION_LITERAL != inst->head->type)
     {
         return 2;
     }
 
     /* upgrade this instruction to a range pseudoinstruction. */
-    inst->head->type = EROC_REGEX_AST_PLACEHOLDER_START_RANGE;
+    inst->head->type = EROC_REGEX_AST_PSEUDOINSTRUCTION_START_RANGE;
 
     return 0;
 }
@@ -914,15 +914,15 @@ static int reduce_instructions(eroc_regex_compiler_instance* inst)
         switch (right->type)
         {
             /* we can't reduce a right-hand alternate. */
-            case EROC_REGEX_AST_PLACEHOLDER_ALTERNATE:
+            case EROC_REGEX_AST_PSEUDOINSTRUCTION_ALTERNATE:
                 return 0;
 
             /* we can't reduce a right-hand start capture. */
-            case EROC_REGEX_AST_PLACEHOLDER_START_CAPTURE:
+            case EROC_REGEX_AST_PSEUDOINSTRUCTION_START_CAPTURE:
                 return 0;
 
             /* attempt to reduce a right-hand end capture. */
-            case EROC_REGEX_AST_PLACEHOLDER_END_CAPTURE:
+            case EROC_REGEX_AST_PSEUDOINSTRUCTION_END_CAPTURE:
                 retval = reduce_capture(inst);
                 if (0 != retval)
                 {
@@ -934,11 +934,11 @@ static int reduce_instructions(eroc_regex_compiler_instance* inst)
         switch (left->type)
         {
             /* we can't reduce this any further until we get the end capture. */
-            case EROC_REGEX_AST_PLACEHOLDER_START_CAPTURE:
+            case EROC_REGEX_AST_PSEUDOINSTRUCTION_START_CAPTURE:
                 return 0;
 
             /* handle alternate case. */
-            case EROC_REGEX_AST_PLACEHOLDER_ALTERNATE:
+            case EROC_REGEX_AST_PSEUDOINSTRUCTION_ALTERNATE:
                 retval = reduce_alternate(inst);
                 break;
 
@@ -1061,8 +1061,8 @@ static int reduce_capture(eroc_regex_compiler_instance* inst)
 
     /* for this reduction to work, start and end must start and end capture, */
     /* and in can't be a pseudoinstruction. */
-    if (   EROC_REGEX_AST_PLACEHOLDER_START_CAPTURE != start->type
-        || EROC_REGEX_AST_PLACEHOLDER_END_CAPTURE != end->type
+    if (   EROC_REGEX_AST_PSEUDOINSTRUCTION_START_CAPTURE != start->type
+        || EROC_REGEX_AST_PSEUDOINSTRUCTION_END_CAPTURE != end->type
         || is_pseudoinstruction(in))
     {
         return 2;
